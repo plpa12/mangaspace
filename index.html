@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0b0f11">
 <meta name="description" content="MangaSpace — sua biblioteca de mangás e reviews.">
 <title>MangaSpace — sua próxima leitura começa aqui</title>
 <style>
@@ -172,6 +172,113 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
  .manga-detail-stat-value{font-size:12px}
  .manga-detail-review h2{font-size:22px}
 }
+
+/* ===== MangaSpace: tema escuro inspirado na referência ===== */
+:root{color-scheme:dark;--ink:#eef0f2;--muted:#9ca5ad;--line:#242c31;--soft:#151b1f;--max:1338px}
+html,body{background:#090d0f;color:var(--ink)}
+body{background:radial-gradient(ellipse at 15% 0%,#151b1f 0,transparent 38%),#090d0f}
+header{background:rgba(13,17,19,.94);border-bottom:1px solid #20272c}
+.logo{color:#f3f4f5;letter-spacing:-1.2px}
+.links{color:#b8c0c7}.links a:hover,.links a.active{color:#fff}
+.search{background:#1b2227;border:1px solid #2a3339;border-radius:10px}
+.search input{color:#f4f5f6}.search input::placeholder{color:#9ba4ab}
+.icon-btn,.menu-btn{background:#171d21;color:#e9edef;border-color:#30383e}
+.search-suggestions{background:#151b1f;border-color:#30383e;box-shadow:0 16px 45px #0008}
+.search-suggestion{background:#151b1f;color:#eef0f2}.search-suggestion:hover,.search-suggestion:focus{background:#222a30}
+.search-suggestion-cover{background:#252d32;color:#aab2b8}
+.hero{grid-area:hero;grid-template-columns:.72fr 1.28fr;gap:42px;padding:30px 0 16px;align-items:center}
+.hero h1{font-size:clamp(34px,3.2vw,44px);letter-spacing:-1.8px;max-width:500px;margin:10px 0 14px}
+.hero p{font-size:14px;line-height:1.6;max-width:440px;color:#a5afb6;margin-bottom:16px}
+.eyebrow{color:#aab3ba;letter-spacing:1.25px;font-weight:550}
+.hero-art{height:245px;border-radius:9px;background:linear-gradient(110deg,#22292e,#343b40 45%,#111619);border:1px solid #30383e;color:#d3d8dc;font-size:19px;position:relative;isolation:isolate;overflow:hidden}
+.hero-art:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 80% 25%,#7b858b55,transparent 28%),linear-gradient(125deg,transparent 35%,#080b0d88 100%)}
+.hero-art:after{content:"MANGASPACE";position:absolute;right:24px;bottom:14px;font-size:10px;letter-spacing:4px;color:#d5d9dc88}
+.btn{background:#e9ecee;color:#111619;border-color:#e9ecee;border-radius:999px;padding:10px 17px;font-weight:600}
+.btn:hover{background:#fff;color:#090d0f}.btn.secondary{background:#171d21;color:#e9edef;border-color:#364047}
+.btn.secondary:hover{background:#252d32}
+#homePage{display:grid;grid-template-columns:minmax(0,2.65fr) minmax(285px,1fr);grid-template-areas:"hero hero" "featured recent" "popular recent" "community community";column-gap:22px;align-items:start}
+#featuredSection{grid-area:featured;border-top:1px solid var(--line);padding-top:10px}
+#recentSection{grid-area:recent;border-top:1px solid var(--line);padding-top:10px;min-width:0}
+#popularSection{grid-area:popular;border-top:1px solid var(--line);padding-top:10px;margin-top:0}
+#communitySection{grid-area:community}
+.section{padding-bottom:22px}
+.section-head{margin-bottom:14px}
+.section-head h2{font-size:21px;letter-spacing:-.45px}
+.text-link{color:#c1c8cd;font-size:11px;white-space:nowrap}.text-link:hover{color:#fff}
+.manga-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+#featuredGrid,#popularGrid{grid-template-columns:repeat(5,minmax(0,1fr))}
+.manga-card{background:#1a2024;border:1px solid #2c353b;border-radius:7px;box-shadow:none}
+.manga-card:hover{border-color:#48545c;box-shadow:0 12px 28px #0004}
+.author-card{cursor:default}
+.author-card:hover{transform:translateY(-2px)}
+.author-portrait{aspect-ratio:2/2.45;background:linear-gradient(145deg,#283137,#121719);display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#aeb8be;font-size:12px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #2c353b}
+.author-card .manga-info h3{white-space:normal;min-height:2.6em}
+.author-role{font-size:10px;color:#98a2aa;min-height:2.8em}
+.author-card .tag{margin-top:8px}
+.cover{background:#111619;aspect-ratio:2/2.45}
+.cover img{object-fit:cover}
+.cover-placeholder{background:linear-gradient(145deg,#20282d,#111619);color:#89949b}
+.manga-info{padding:9px 10px 10px;background:linear-gradient(180deg,#20272c,#171d21)}
+.manga-info h3{font-size:12px;color:#f0f2f3;margin-bottom:3px}
+.author{color:#98a2aa;font-size:10px}
+.rating{font-size:11px;color:#dce1e4;margin-top:8px}
+.tag{background:#2a3238;color:#c5cdd2;font-size:9px;margin-top:7px}
+.review-grid{grid-template-columns:1fr;gap:7px}
+.review-card{grid-template-columns:58px minmax(0,1fr);gap:10px;padding:8px;background:linear-gradient(120deg,#1a2024,#13191c);border:1px solid #20282d;border-radius:9px;min-height:88px}
+.review-card:hover{border-color:#38444b;transform:translateY(-1px)}
+.review-thumb{width:58px;border-radius:6px;background:#252d32;object-fit:cover}
+.review-thumb.placeholder{font-size:9px;background:#252d32;color:#9ca6ad}
+.review-label{font-size:10px;color:#b4bdc3}
+.review-content h3{font-size:11px;line-height:1.35;margin:3px 0}
+.review-content p{font-size:10px;line-height:1.4;color:#9da7ae;-webkit-line-clamp:2}
+.review-meta{padding-top:5px;font-size:9px;color:#8d989f}
+.review-score{color:#e2e6e9}
+.latest-heading{border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+#latestReviews .review-card{grid-template-columns:58px minmax(0,1fr)}
+.empty{border-color:#303a40;background:#141a1e;color:#aab3b9}
+.community{background:linear-gradient(120deg,#1b2226,#121719);border:1px solid #293238;border-radius:12px;padding:24px;margin:18px 0 35px}
+.community h2{font-size:20px}.community p{color:#a1abb2}
+.about-content p{color:#a6afb6}
+footer{border-color:#252d32;color:#8e989f}
+.manga-detail-cover,.manga-detail-placeholder{background:#1a2024;border-color:#2a3339}
+.manga-detail-stat,.manga-review-item{background:#151b1f;border-color:#2b343a}
+.manga-detail-stat-label,.manga-detail-meta,.manga-detail-description,.manga-review-item p{color:#a1abb2}
+.back-link{color:#b5bec4}
+.modal-backdrop{background:#000b}.modal{background:#151b1f;color:#eef0f2;border:1px solid #303a40}
+.close{background:#252d32;color:#eef0f2}
+.field label{color:#c3cbd0}.field input,.field textarea{background:#0f1417;color:#eef0f2;border-color:#303a40}
+.field input::placeholder,.field textarea::placeholder{color:#7f8a92}
+.helper{color:#98a2a9}.toast{background:#e9ecee;color:#111619}
+@media(max-width:1100px){
+ #homePage{grid-template-columns:minmax(0,1fr) 290px;column-gap:16px}
+ #featuredGrid,#popularGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .manga-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .hero{grid-template-columns:.8fr 1.2fr;gap:24px}
+}
+@media(max-width:760px){
+ #homePage{display:flex;flex-direction:column;gap:0}
+ #homePage>.hero,#homePage>#featuredSection,#homePage>#recentSection,#homePage>#popularSection,#homePage>#communitySection{width:100%}
+ .hero{display:grid;grid-template-columns:1fr;padding:28px 0 20px;gap:16px}
+ .hero-art{height:175px;grid-row:1}
+ .hero h1{font-size:34px}
+ #featuredGrid,#popularGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #recentSection{width:100%;margin-top:0}
+ #recentReviews,#latestReviews{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .review-card{grid-template-columns:48px minmax(0,1fr);padding:7px;gap:8px}
+ .review-thumb{width:48px}
+ .links{background:#11171a;border-color:#2a3339}
+ .links a{color:#c4ccd1}
+ .search{background:transparent;border-color:#30383e}
+ .search.expanded{background:#1b2227}
+ .section-head h2{font-size:19px}
+ .community{margin-top:18px}
+}
+@media(max-width:420px){
+ #featuredGrid,#popularGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #recentReviews,#latestReviews{grid-template-columns:1fr}
+ .hero h1{font-size:31px}
+}
+
 </style>
 </head>
 <body>
@@ -216,8 +323,14 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
    <div class="manga-grid" id="featuredGrid"></div>
   </section>
   <section class="section" id="recentSection">
-   <div class="section-head"><h2>Reviews recentes</h2><button class="text-link" id="addReviewBtn">＋ Adicionar review</button></div>
+   <div class="section-head"><h2>Reviews recentes</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
    <div class="review-grid" id="recentReviews"></div>
+   <div class="section-head latest-heading"><h2>Últimas reviews</h2><button class="text-link" id="latestReviewsBtn">Ver todas →</button></div>
+   <div class="review-grid" id="latestReviews"></div>
+  </section>
+  <section class="section" id="popularSection">
+   <div class="section-head"><h2>Autores aclamados</h2></div>
+   <div class="manga-grid" id="popularGrid"></div>
   </section>
   <section class="community" id="communitySection">
    <div><h2>Uma comunidade feita por leitores.</h2><p>Publique sua opinião, compartilhe uma imagem e ajude alguém a escolher o próximo mangá.</p></div>
@@ -372,8 +485,23 @@ function renderManga(){
   return {...m,rating:average,reviewCount:reviews.length};
  }).sort((a,b)=>b.rating-a.rating||b.reviewCount-a.reviewCount).slice(0,5);
 
- document.getElementById('featuredGrid').innerHTML=
-  featured.length?featured.map(mangaCard).join(''):'<div class="empty">Nenhum mangá encontrado.</div>';
+ const fillSlots=(list,count)=>{
+  const html=list.map(mangaCard);
+  for(let i=html.length;i<count;i++)html.push(`<article class="manga-card slot-card" aria-hidden="true"><div class="cover"><div class="cover-placeholder">Espaço disponível</div></div><div class="manga-info"><h3>Em breve</h3><div class="author">Nova obra</div><div class="rating">—</div><span class="tag">A adicionar</span></div></article>`);
+  return html.join('');
+ };
+ document.getElementById('featuredGrid').innerHTML=fillSlots(featured,5);
+
+ const acclaimedAuthors=[
+  {name:'Takehiko Inoue',works:'Vagabond · Real',label:'Autor aclamado'},
+  {name:'Kentaro Miura',works:'Berserk',label:'Fantasia sombria'},
+  {name:'Makoto Yukimura',works:'Vinland Saga',label:'Aventura histórica'},
+  {name:'Em breve',works:'Novo autor',label:'A adicionar'},
+  {name:'Em breve',works:'Novo autor',label:'A adicionar'}
+ ];
+ document.getElementById('popularGrid').innerHTML=acclaimedAuthors.map((author,index)=>
+  `<article class="manga-card author-card" aria-label="${escapeHtml(author.name)}"><div class="author-portrait">${index<3?'Retrato em breve':'Espaço disponível'}</div><div class="manga-info"><h3>${escapeHtml(author.name)}</h3><div class="author-role">${escapeHtml(author.works)}</div><span class="tag">${escapeHtml(author.label)}</span></div></article>`
+ ).join('');
 
  document.getElementById('libraryGrid').innerHTML=
   items.length?items.map(mangaCard).join(''):'<div class="empty">Nenhum mangá encontrado. Tente outra busca ou publique uma review.</div>';
@@ -392,11 +520,14 @@ function renderReviews(){
 
  document.getElementById('recentReviews').innerHTML=
   items.length?items.slice(0,3).map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
+ document.getElementById('latestReviews').innerHTML=
+  items.length?items.slice(3,6).map(reviewCard).join(''):'<div class="empty">Mais reviews em breve.</div>';
 
  document.getElementById('allReviewsGrid').innerHTML=
   items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
 
  attachMangaClicks(document.getElementById('recentReviews'));
+ attachMangaClicks(document.getElementById('latestReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
 }
 
@@ -632,6 +763,7 @@ document.getElementById('searchBox').addEventListener('click',()=>{
 });
 
 document.getElementById('showAllManga').addEventListener('click',()=>navigate('library'));
+document.getElementById('latestReviewsBtn').addEventListener('click',()=>navigate('reviews'));
 
 ['addReviewBtn','communityAdd','aboutAdd'].forEach(id=>
  document.getElementById(id).addEventListener('click',openReview)
