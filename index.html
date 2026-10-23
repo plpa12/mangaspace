@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,8 +29,6 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .search input{border:0;outline:0;background:transparent;width:100%;font-size:13px;min-width:0}
 .icon-btn,.menu-btn{border:1px solid var(--line);background:white;border-radius:50%;width:40px;height:40px;display:grid;place-items:center}
 .menu-btn{display:none}
-
-/* Lista de sugestões da busca */
 .search-suggestions{position:absolute;top:calc(100% + 10px);left:0;right:0;background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 35px #00000012;z-index:25;overflow:hidden;display:none;max-height:360px;overflow-y:auto}
 .search-suggestions.show{display:block}
 .search-suggestion{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;background:white;border:0;text-align:left;cursor:pointer}
@@ -40,7 +37,6 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .search-suggestion-cover img{width:100%;height:100%;object-fit:cover;display:block}
 .search-suggestion-name{font-size:13px;font-weight:650;overflow-wrap:anywhere}
 .search-no-results{padding:16px 12px;color:#777;font-size:13px}
-
 .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:54px 0 58px}
 .eyebrow{text-transform:uppercase;letter-spacing:2px;color:#888;font-size:11px;font-weight:700}
 .hero h1{font-size:clamp(34px,4.1vw,54px);line-height:1.08;letter-spacing:-2.6px;margin:16px 0}
@@ -126,7 +122,6 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
 .helper{font-size:11px;color:#888}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#171717;color:white;padding:11px 16px;border-radius:99px;font-size:13px;z-index:50;transition:.25s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 @media(max-width:950px){
  .manga-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
  #featuredGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -280,12 +275,12 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
 
 <script>
 const starterManga=[
-{id:'seed-vinland',title:'Vinland Saga',author:'Makoto Yukimura',rating:9.7,genre:'Seinen',reviewTitle:'Um épico sobre humanidade e propósito',review:'Vinland Saga é muito mais do que uma história de vingança. É uma jornada sobre violência, amadurecimento e a busca por um lugar onde se possa viver em paz.',date:'2025-10-12',seed:true},
+{id:'seed-vinland',title:'Vinland Saga',author:'Makoto Yukimura',image:'vinland-saga.jpg',rating:9.7,genre:'Seinen',reviewTitle:'Um épico sobre humanidade e propósito',review:'Vinland Saga é muito mais do que uma história de vingança. É uma jornada sobre violência, amadurecimento e a busca por um lugar onde se possa viver em paz.',date:'2025-10-12',seed:true},
 {id:'seed-monster',title:'Monster',author:'Naoki Urasawa',rating:9.5,genre:'Suspense',reviewTitle:'O suspense que te prende do início ao fim',review:'Um thriller psicológico cuidadosamente construído, cheio de dilemas morais e personagens inesquecíveis. Cada revelação deixa uma pergunta nova no ar.',date:'2025-10-10',seed:true},
 {id:'seed-berserk',title:'Berserk',author:'Kentaro Miura',rating:9.8,genre:'Fantasia sombria',reviewTitle:'Dor, luta e uma arte extraordinária',review:'Uma fantasia sombria intensa, com arte impressionante e uma jornada que explora trauma, ambição e sobrevivência.',date:'2025-10-08',seed:true},
-{id:'seed-vagabond',title:'Vagabond',author:'Takehiko Inoue',rating:9.6,genre:'Seinen',reviewTitle:'Uma reflexão desenhada em cada página',review:'Uma obra contemplativa sobre força, ego e autoconhecimento. A arte de Inoue transforma até os silêncios em momentos marcantes.',date:'2025-10-06',seed:true},
+{id:'seed-vagabond',title:'Vagabond',author:'Takehiko Inoue',image:'vagabond.jpg',rating:9.6,genre:'Seinen',reviewTitle:'Uma reflexão desenhada em cada página',review:'Uma obra contemplativa sobre força, ego e autoconhecimento. A arte de Inoue transforma até os silêncios em momentos marcantes.',date:'2025-10-06',seed:true},
 {id:'seed-pluto',title:'Pluto',author:'Naoki Urasawa',rating:9.4,genre:'Ficção científica',reviewTitle:'Humanidade em uma história de robôs',review:'Mistério e ficção científica se encontram em uma narrativa emocionante sobre memória, perda e o que nos torna humanos.',date:'2025-10-04',seed:true},
-{id:'seed-real',title:'Real',author:'Takehiko Inoue',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true}
+{id:'seed-real',title:'Real',author:'Takehiko Inoue',image:'real.jpg',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true}
 ];
 
 const mangaDetails={
@@ -355,7 +350,6 @@ function attachMangaClicks(root){
  });
 }
 
-/* TOP 5 por média das notas */
 function renderManga(){
  const q=searchTerm.toLocaleLowerCase('pt-BR');
  const items=uniqueManga().filter(m=>
@@ -522,7 +516,6 @@ function showToast(msg){
  window.toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-/* Busca com sugestões em tempo real */
 const searchInput=document.getElementById('searchInput');
 const searchSuggestions=document.getElementById('searchSuggestions');
 
