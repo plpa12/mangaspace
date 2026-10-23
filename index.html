@@ -58,8 +58,8 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 #featuredGrid{grid-template-columns:repeat(5,minmax(0,1fr))}
 .manga-card{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white;transition:.2s;cursor:pointer;min-width:0}
 .manga-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #0000000a}
-.cover{aspect-ratio:2/3;background:#f0f0ee;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
-.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover{aspect-ratio:2/3;background:#f0f0ee;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cover img{width:100%;height:100%;object-fit:contain;display:block}
 .cover-placeholder{height:100%;min-height:100px;width:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#888;font-size:13px;background:linear-gradient(145deg,#f2f2f0,#dededb)}
 .manga-info{padding:12px}
 .manga-info h3{font-size:14px;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -68,6 +68,7 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .star{color:#e6a323}
 .tag{display:inline-block;background:#f4f4f4;border-radius:99px;padding:3px 8px;font-size:10px;margin-top:10px;color:#555}
 .review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.release-slots .release-slot{min-height:108px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.015)}
 .review-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:100px 1fr;gap:15px;cursor:pointer;transition:.2s;min-width:0}
 .review-card:hover{border-color:#ccc;transform:translateY(-2px)}
 .review-thumb{width:100px;aspect-ratio:2/3;height:auto;align-self:start;object-fit:contain;border-radius:9px;background:#eee;display:block}
@@ -238,7 +239,7 @@ header{background:rgba(13,17,19,.94);border-bottom:1px solid #20272c}
 .cover img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
   display:block;
 }
 
@@ -263,7 +264,7 @@ header{background:rgba(13,17,19,.94);border-bottom:1px solid #20272c}
 .review-grid{grid-template-columns:1fr;gap:7px}
 .review-card{grid-template-columns:58px minmax(0,1fr);gap:10px;padding:8px;background:linear-gradient(120deg,#1a2024,#13191c);border:1px solid #20282d;border-radius:9px;min-height:88px}
 .review-card:hover{border-color:#38444b;transform:translateY(-1px)}
-.review-thumb{width:58px;border-radius:6px;background:#252d32;object-fit:contain}
+.review-thumb{width:58px;border-radius:6px;background:#252d32;object-fit:cover}
 .review-thumb.placeholder{font-size:9px;background:#252d32;color:#9ca6ad}
 .review-label{font-size:10px;color:#b4bdc3}
 .review-content h3{font-size:11px;line-height:1.35;margin:3px 0}
@@ -360,8 +361,8 @@ footer{border-color:#252d32;color:#8e989f}
    <div class="manga-grid" id="featuredGrid"></div>
   </section>
   <section class="section" id="recentSection">
-   <div class="section-head"><h2>Reviews recentes</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
-   <div class="review-grid" id="recentReviews"></div>
+   <div class="section-head"><h2>Lançamentos no Brasil</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
+   <div class="review-grid release-slots" id="recentReviews"><div class="release-slot"></div><div class="release-slot"></div><div class="release-slot"></div></div>
    <div class="section-head latest-heading"><h2>Últimas reviews</h2><button class="text-link" id="latestReviewsBtn">Ver todas →</button></div>
    <div class="review-grid" id="latestReviews"></div>
   </section>
@@ -427,14 +428,14 @@ footer{border-color:#252d32;color:#8e989f}
 <script>
 const starterManga=[
 {id:'seed-vinland',title:'Vinland Saga',author:'Makoto Yukimura',image:'vinland-saga.jpg',rating:9.7,genre:'Seinen',reviewTitle:'Um épico sobre humanidade e propósito',review:'Vinland Saga é muito mais do que uma história de vingança. É uma jornada sobre violência, amadurecimento e a busca por um lugar onde se possa viver em paz.',date:'2025-10-12',seed:true},
-{id:'seed-monster',title:'Monster',author:'Naoki Urasawa',image:'monster.jpg',rating:9.5,genre:'Suspense',reviewTitle:'O suspense que te prende do início ao fim',review:'Um thriller psicológico cuidadosamente construído, cheio de dilemas morais e personagens inesquecíveis. Cada revelação deixa uma pergunta nova no ar.',date:'2025-10-10',seed:true},
-{id:'seed-berserk',title:'Berserk',author:'Kentaro Miura',image:'berserk.jpg',rating:9.8,genre:'Fantasia sombria',reviewTitle:'Dor, luta e uma arte extraordinária',review:'Uma fantasia sombria intensa, com arte impressionante e uma jornada que explora trauma, ambição e sobrevivência.',date:'2025-10-08',seed:true},
+{id:'seed-monster',title:'Monster',author:'Naoki Urasawa',rating:9.5,genre:'Suspense',reviewTitle:'O suspense que te prende do início ao fim',review:'Um thriller psicológico cuidadosamente construído, cheio de dilemas morais e personagens inesquecíveis. Cada revelação deixa uma pergunta nova no ar.',date:'2025-10-10',seed:true},
+{id:'seed-berserk',title:'Berserk',author:'Kentaro Miura',rating:9.8,genre:'Fantasia sombria',reviewTitle:'Dor, luta e uma arte extraordinária',review:'Uma fantasia sombria intensa, com arte impressionante e uma jornada que explora trauma, ambição e sobrevivência.',date:'2025-10-08',seed:true},
 {id:'seed-vagabond',title:'Vagabond',author:'Takehiko Inoue',image:'vagabond.jpg',rating:9.6,genre:'Seinen',reviewTitle:'Uma reflexão desenhada em cada página',review:'Uma obra contemplativa sobre força, ego e autoconhecimento. A arte de Inoue transforma até os silêncios em momentos marcantes.',date:'2025-10-06',seed:true},
-{id:'seed-pluto',title:'Pluto',author:'Naoki Urasawa',image:'pluto.jpg',rating:8.2,genre:'Ficção científica',reviewTitle:'Humanidade em uma história de robôs',review:'Mistério e ficção científica se encontram em uma narrativa emocionante sobre memória, perda e o que nos torna humanos.',date:'2025-10-04',seed:true},
-{id:'seed-real',title:'Real',author:'Takehiko Inoue',image:'real.jpg',rating:9.8,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true},
-{id:'seed-claymore',title:'Claymore',author:'Norihiro Yagi',image:'claymore.jpg',rating:8.4,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
-{id:'seed-tokyo-ghoul',title:'Tokyo Ghoul',author:'Sui Ishida',image:'tokyoghoul.jpg',rating:8.7,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
-{id:'seed-tokyo-ghoul-re',title:'Tokyo Ghoul:RE',author:'Sui Ishida',image:'tokyoghoulre.jpg',rating:9.2,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true}
+{id:'seed-pluto',title:'Pluto',author:'Naoki Urasawa',rating:9.4,genre:'Ficção científica',reviewTitle:'Humanidade em uma história de robôs',review:'Mistério e ficção científica se encontram em uma narrativa emocionante sobre memória, perda e o que nos torna humanos.',date:'2025-10-04',seed:true},
+{id:'seed-real',title:'Real',author:'Takehiko Inoue',image:'real.jpg',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true},
+{id:'seed-claymore',title:'Claymore',author:'Norihiro Yagi',rating:8.4,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
+{id:'seed-tokyo-ghoul',title:'Tokyo Ghoul',author:'Sui Ishida',rating:8.7,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
+{id:'seed-tokyo-ghoul-re',title:'Tokyo Ghoul:RE',author:'Sui Ishida',rating:9.2,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true}
 ];
 
 const mangaDetails={
@@ -561,15 +562,13 @@ function renderReviews(){
    .toLocaleLowerCase('pt-BR').includes(q)
  ).sort((a,b)=>new Date(b.date)-new Date(a.date));
 
- document.getElementById('recentReviews').innerHTML=
-  items.length?items.slice(0,3).map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
+ // Os três espaços de 'Lançamentos no Brasil' ficam vazios para receber conteúdo depois.
  document.getElementById('latestReviews').innerHTML=
   items.length?items.slice(3,6).map(reviewCard).join(''):'<div class="empty">Mais reviews em breve.</div>';
 
  document.getElementById('allReviewsGrid').innerHTML=
   items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
 
- attachMangaClicks(document.getElementById('recentReviews'));
  attachMangaClicks(document.getElementById('latestReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
 }
