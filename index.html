@@ -68,7 +68,6 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .star{color:#e6a323}
 .tag{display:inline-block;background:#f4f4f4;border-radius:99px;padding:3px 8px;font-size:10px;margin-top:10px;color:#555}
 .review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.release-slots .release-slot{min-height:108px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.015)}
 .review-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:100px 1fr;gap:15px;cursor:pointer;transition:.2s;min-width:0}
 .review-card:hover{border-color:#ccc;transform:translateY(-2px)}
 .review-thumb{width:100px;aspect-ratio:2/3;height:auto;align-self:start;object-fit:contain;border-radius:9px;background:#eee;display:block}
@@ -361,8 +360,8 @@ footer{border-color:#252d32;color:#8e989f}
    <div class="manga-grid" id="featuredGrid"></div>
   </section>
   <section class="section" id="recentSection">
-   <div class="section-head"><h2>Lançamentos no Brasil</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
-   <div class="review-grid release-slots" id="recentReviews"><div class="release-slot"></div><div class="release-slot"></div><div class="release-slot"></div></div>
+   <div class="section-head"><h2>Reviews recentes</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
+   <div class="review-grid" id="recentReviews"></div>
    <div class="section-head latest-heading"><h2>Últimas reviews</h2><button class="text-link" id="latestReviewsBtn">Ver todas →</button></div>
    <div class="review-grid" id="latestReviews"></div>
   </section>
@@ -432,10 +431,7 @@ const starterManga=[
 {id:'seed-berserk',title:'Berserk',author:'Kentaro Miura',rating:9.8,genre:'Fantasia sombria',reviewTitle:'Dor, luta e uma arte extraordinária',review:'Uma fantasia sombria intensa, com arte impressionante e uma jornada que explora trauma, ambição e sobrevivência.',date:'2025-10-08',seed:true},
 {id:'seed-vagabond',title:'Vagabond',author:'Takehiko Inoue',image:'vagabond.jpg',rating:9.6,genre:'Seinen',reviewTitle:'Uma reflexão desenhada em cada página',review:'Uma obra contemplativa sobre força, ego e autoconhecimento. A arte de Inoue transforma até os silêncios em momentos marcantes.',date:'2025-10-06',seed:true},
 {id:'seed-pluto',title:'Pluto',author:'Naoki Urasawa',rating:9.4,genre:'Ficção científica',reviewTitle:'Humanidade em uma história de robôs',review:'Mistério e ficção científica se encontram em uma narrativa emocionante sobre memória, perda e o que nos torna humanos.',date:'2025-10-04',seed:true},
-{id:'seed-real',title:'Real',author:'Takehiko Inoue',image:'real.jpg',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true},
-{id:'seed-claymore',title:'Claymore',author:'Norihiro Yagi',rating:8.4,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
-{id:'seed-tokyo-ghoul',title:'Tokyo Ghoul',author:'Sui Ishida',rating:8.7,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true},
-{id:'seed-tokyo-ghoul-re',title:'Tokyo Ghoul:RE',author:'Sui Ishida',rating:9.2,genre:'Mangá',reviewTitle:'',review:'',date:'2026-10-23',seed:true,ratingOnly:true}
+{id:'seed-real',title:'Real',author:'Takehiko Inoue',image:'real.jpg',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true}
 ];
 
 const mangaDetails={
@@ -444,10 +440,7 @@ const mangaDetails={
  'vinland saga':{chapters:224,volumes:29,status:'Finalizado'},
  'monster':{chapters:162,volumes:18,status:'Finalizado'},
  'real':{chapters:105,volumes:17,status:'Em publicação'},
- 'pluto':{chapters:65,volumes:8,status:'Finalizado'},
- 'claymore':{chapters:159,volumes:27,status:'Finalizado'},
- 'tokyo ghoul':{chapters:144,volumes:14,status:'Finalizado'},
- 'tokyo ghoul:re':{chapters:181,volumes:16,status:'Finalizado'}
+ 'pluto':{chapters:65,volumes:8,status:'Finalizado'}
 };
 
 const storageKey='mangaspace-reviews-v1';
@@ -492,7 +485,7 @@ function mangaCard(m){
 function reviewCard(m){
  return `<article class="review-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  ${m.image?`<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>`}
- <div class="review-content"><span class="review-label">${m.ratingOnly?'Nota':'Review'} · ${escapeHtml(m.genre||'Mangá')}</span>${m.ratingOnly?'':`<h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p>`}<div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
+ <div class="review-content"><span class="review-label">Review · ${escapeHtml(m.genre||'Mangá')}</span><h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p><div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
 }
 
 function attachMangaClicks(root){
@@ -562,13 +555,15 @@ function renderReviews(){
    .toLocaleLowerCase('pt-BR').includes(q)
  ).sort((a,b)=>new Date(b.date)-new Date(a.date));
 
- // Os três espaços de 'Lançamentos no Brasil' ficam vazios para receber conteúdo depois.
+ document.getElementById('recentReviews').innerHTML=
+  items.length?items.slice(0,3).map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
  document.getElementById('latestReviews').innerHTML=
   items.length?items.slice(3,6).map(reviewCard).join(''):'<div class="empty">Mais reviews em breve.</div>';
 
  document.getElementById('allReviewsGrid').innerHTML=
   items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
 
+ attachMangaClicks(document.getElementById('recentReviews'));
  attachMangaClicks(document.getElementById('latestReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
 }
@@ -631,8 +626,8 @@ function openMangaPage(id,updateHistory=true){
  </div></div>
  <section class="manga-detail-review" id="fullMangaReview"><div class="eyebrow">OPINIÕES DOS LEITORES</div>
  <h2>Reviews de ${escapeHtml(selected.title)}</h2><div class="manga-review-list">
- ${related.map(r=>`<article class="manga-review-item"><div class="review-label">${r.ratingOnly?'Nota':(r.seed?'MangaSpace':'Comunidade')} · ${formatDate(r.date)}</div>
- ${r.ratingOnly?'':`<h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3>`}<div class="review-score">${ratingMarkup(r.rating)} / 10</div>${r.ratingOnly?'':`<p>${escapeHtml(r.review||'')}</p>`}
+ ${related.map(r=>`<article class="manga-review-item"><div class="review-label">${r.seed?'MangaSpace':'Comunidade'} · ${formatDate(r.date)}</div>
+ <h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3><div class="review-score">${ratingMarkup(r.rating)} / 10</div><p>${escapeHtml(r.review||'')}</p>
  ${r.seed?'':`<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}</article>`).join('')}
  </div></section>`;
 
