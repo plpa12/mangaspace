@@ -25,10 +25,22 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .links{display:flex;gap:28px;color:#555;font-size:14px}
 .links a:hover,.links a.active{color:#111}
 .nav-right{display:flex;align-items:center;gap:12px}
-.search{display:flex;align-items:center;gap:8px;background:#f5f5f5;border-radius:999px;padding:10px 14px;width:220px}
-.search input{border:0;outline:0;background:transparent;width:100%;font-size:13px}
+.search-wrap{position:relative;width:220px;flex-shrink:0}
+.search{display:flex;align-items:center;gap:8px;background:#f5f5f5;border-radius:999px;padding:10px 14px;width:100%}
+.search input{border:0;outline:0;background:transparent;width:100%;font-size:13px;min-width:0}
 .icon-btn,.menu-btn{border:1px solid var(--line);background:white;border-radius:50%;width:40px;height:40px;display:grid;place-items:center}
 .menu-btn{display:none}
+
+/* Lista de sugestões da busca */
+.search-suggestions{position:absolute;top:calc(100% + 10px);left:0;right:0;background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 35px #00000012;z-index:25;overflow:hidden;display:none;max-height:360px;overflow-y:auto}
+.search-suggestions.show{display:block}
+.search-suggestion{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;background:white;border:0;text-align:left;cursor:pointer}
+.search-suggestion:hover,.search-suggestion:focus{background:#f7f7f5;outline:none}
+.search-suggestion-cover{width:42px;height:56px;flex-shrink:0;border-radius:6px;object-fit:cover;background:#f0f0ee;display:grid;place-items:center;overflow:hidden;color:#888;font-size:9px;text-align:center;overflow-wrap:anywhere}
+.search-suggestion-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.search-suggestion-name{font-size:13px;font-weight:650;overflow-wrap:anywhere}
+.search-no-results{padding:16px 12px;color:#777;font-size:13px}
+
 .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:54px 0 58px}
 .eyebrow{text-transform:uppercase;letter-spacing:2px;color:#888;font-size:11px;font-weight:700}
 .hero h1{font-size:clamp(34px,4.1vw,54px);line-height:1.08;letter-spacing:-2.6px;margin:16px 0}
@@ -88,13 +100,10 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
 .manga-detail-meta{color:#777;font-size:14px;margin-bottom:18px}
 .manga-detail-rating{font-size:17px;margin-bottom:20px}
 .manga-detail-description{color:#777;font-size:14px;max-width:500px}
-
-/* Informações de cada obra */
 .manga-detail-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0;max-width:560px}
 .manga-detail-stat{border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
 .manga-detail-stat-label{display:block;color:#888;font-size:11px;margin-bottom:4px}
 .manga-detail-stat-value{display:block;font-size:14px;font-weight:700;overflow-wrap:anywhere}
-
 .manga-detail-review{border-top:1px solid var(--line);margin-top:38px;padding-top:28px}
 .manga-detail-review h2{font-size:25px;letter-spacing:-.7px;margin:8px 0 16px}
 .manga-review-list{display:grid;gap:15px;margin-top:25px}
@@ -117,13 +126,14 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
 .helper{font-size:11px;color:#888}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#171717;color:white;padding:11px 16px;border-radius:99px;font-size:13px;z-index:50;transition:.25s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 @media(max-width:950px){
  .manga-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
  #featuredGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
  .hero{gap:25px}
  .review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .links{gap:16px}
- .search{width:180px}
+ .search-wrap{width:180px}
 }
 @media(max-width:650px){
  .wrap{width:calc(100% - 32px)}
@@ -132,10 +142,13 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
  .links{display:none;position:absolute;left:0;right:0;top:63px;background:white;padding:16px 24px;border-bottom:1px solid var(--line);flex-direction:column;gap:15px}
  .links.show{display:flex}
  .menu-btn{display:grid}
+ .search-wrap{width:40px}
+ .search-wrap:has(.search.expanded){width:auto}
  .search{width:40px;padding:10px;justify-content:center;background:transparent;border:1px solid var(--line)}
  .search input{display:none}
- .search.expanded{position:absolute;left:16px;right:60px;width:auto;background:#f5f5f5;z-index:2}
+ .search.expanded{position:absolute;left:16px;right:60px;width:auto;background:#f5f5f5;z-index:26}
  .search.expanded input{display:block}
+ .search-suggestions{position:fixed;top:112px;left:16px;right:16px;width:auto;max-height:60vh}
  .nav-right{gap:7px}
  .hero{grid-template-columns:1fr;padding:36px 0 35px;gap:24px}
  .hero h1{font-size:38px;letter-spacing:-1.8px}
@@ -176,7 +189,13 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
    <a href="#sobre" data-route="about">Sobre</a>
   </nav>
   <div class="nav-right">
-   <label class="search" id="searchBox" aria-label="Buscar mangá"><span>⌕</span><input id="searchInput" placeholder="Buscar mangás..." autocomplete="off"></label>
+   <div class="search-wrap" id="searchWrap">
+    <label class="search" id="searchBox" aria-label="Buscar mangá">
+     <span>⌕</span>
+     <input id="searchInput" placeholder="Buscar mangás..." autocomplete="off">
+    </label>
+    <div class="search-suggestions" id="searchSuggestions"></div>
+   </div>
    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
   </div>
  </div>
@@ -269,7 +288,6 @@ const starterManga=[
 {id:'seed-real',title:'Real',author:'Takehiko Inoue',rating:9.2,genre:'Drama',reviewTitle:'Uma história humana e sensível',review:'Real trata de esporte, deficiência e recomeços com uma sensibilidade rara. Seus personagens são imperfeitos, e é justamente isso que os torna tão próximos.',date:'2025-10-02',seed:true}
 ];
 
-/* Dados fixos das obras para suas páginas individuais */
 const mangaDetails={
  'vagabond':{chapters:327,volumes:37,status:'Hiato'},
  'berserk':{chapters:386,volumes:43,status:'Em publicação'},
@@ -292,6 +310,7 @@ function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'
 function ratingMarkup(r){return `<span class="star">★</span> ${Number(r).toFixed(1)}`}
 function formatDate(date){try{return new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return date||''}}
 function findReview(id){return allReviews().find(m=>m.id===id)}
+
 function uniqueManga(){
  const map=new Map();
  allReviews().forEach(m=>{
@@ -301,6 +320,7 @@ function uniqueManga(){
  });
  return [...map.values()];
 }
+
 function findMangaByTitle(query){
  const q=query.trim().toLocaleLowerCase('pt-BR');
  if(!q)return null;
@@ -309,28 +329,33 @@ function findMangaByTitle(query){
  ||all.find(m=>m.title.toLocaleLowerCase('pt-BR').startsWith(q))
  ||all.find(m=>m.title.toLocaleLowerCase('pt-BR').includes(q));
 }
-function coverMarkup(m,cls=''){
- return m.image?`<img class="${cls}" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="${cls} cover-placeholder">${escapeHtml(m.title)}</div>`;
-}
+
 function mangaCard(m){
  return `<article class="manga-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  <div class="cover">${m.image?`<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="cover-placeholder">${escapeHtml(m.title)}</div>`}</div>
  <div class="manga-info"><h3>${escapeHtml(m.title)}</h3><div class="author">${escapeHtml(m.author||'Autor não informado')}</div><div class="rating">${ratingMarkup(m.rating)}</div><span class="tag">${escapeHtml(m.genre||'Mangá')}</span></div></article>`;
 }
+
 function reviewCard(m){
  return `<article class="review-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  ${m.image?`<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>`}
  <div class="review-content"><span class="review-label">Review · ${escapeHtml(m.genre||'Mangá')}</span><h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p><div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
 }
+
 function attachMangaClicks(root){
  root.querySelectorAll('[data-manga]').forEach(el=>{
   const open=()=>openMangaPage(el.dataset.manga);
   el.addEventListener('click',open);
-  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+  el.addEventListener('keydown',e=>{
+   if(e.key==='Enter'||e.key===' '){
+    e.preventDefault();
+    open();
+   }
+  });
  });
 }
 
-/* Em destaque: TOP 5 por média das notas, com quantidade de reviews como desempate. */
+/* TOP 5 por média das notas */
 function renderManga(){
  const q=searchTerm.toLocaleLowerCase('pt-BR');
  const items=uniqueManga().filter(m=>
@@ -353,23 +378,33 @@ function renderManga(){
  }).sort((a,b)=>b.rating-a.rating||b.reviewCount-a.reviewCount).slice(0,5);
 
  document.getElementById('featuredGrid').innerHTML=
-  featured.length?featured.map(mangaCard).join(''):`<div class="empty">Nenhum mangá encontrado.</div>`;
+  featured.length?featured.map(mangaCard).join(''):'<div class="empty">Nenhum mangá encontrado.</div>';
 
  document.getElementById('libraryGrid').innerHTML=
-  items.length?items.map(mangaCard).join(''):`<div class="empty">Nenhum mangá encontrado. Tente outra busca ou publique uma review.</div>`;
+  items.length?items.map(mangaCard).join(''):'<div class="empty">Nenhum mangá encontrado. Tente outra busca ou publique uma review.</div>';
 
  document.getElementById('libraryCount').textContent=`Todos os mangás · ${items.length}`;
  attachMangaClicks(document.getElementById('featuredGrid'));
  attachMangaClicks(document.getElementById('libraryGrid'));
 }
+
 function renderReviews(){
  const q=searchTerm.toLocaleLowerCase('pt-BR');
- const items=allReviews().filter(m=>(m.title+' '+(m.reviewTitle||'')+' '+(m.review||'')).toLocaleLowerCase('pt-BR').includes(q)).sort((a,b)=>new Date(b.date)-new Date(a.date));
- document.getElementById('recentReviews').innerHTML=items.length?items.slice(0,3).map(reviewCard).join(''):`<div class="empty">Nenhuma review encontrada.</div>`;
- document.getElementById('allReviewsGrid').innerHTML=items.length?items.map(reviewCard).join(''):`<div class="empty">Nenhuma review encontrada.</div>`;
+ const items=allReviews().filter(m=>
+  (m.title+' '+(m.reviewTitle||'')+' '+(m.review||''))
+   .toLocaleLowerCase('pt-BR').includes(q)
+ ).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+ document.getElementById('recentReviews').innerHTML=
+  items.length?items.slice(0,3).map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
+
+ document.getElementById('allReviewsGrid').innerHTML=
+  items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
+
  attachMangaClicks(document.getElementById('recentReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
 }
+
 function renderAll(){renderManga();renderReviews()}
 
 function setPage(page,updateHistory=true){
@@ -381,12 +416,12 @@ function setPage(page,updateHistory=true){
  if(updateHistory)history.pushState({page},'',location.pathname+location.search+'#'+(page==='home'?'inicio':page==='library'?'mangas':page==='reviews'?'reviews':'sobre'));
  window.scrollTo({top:0,behavior:'smooth'});
 }
+
 function updateNav(page){
  document.querySelectorAll('#navLinks a').forEach(a=>a.classList.toggle('active',a.dataset.route===page));
  document.getElementById('navLinks').classList.remove('show');
 }
 
-/* Página individual de cada obra */
 function openMangaPage(id,updateHistory=true){
  const selected=findReview(id);
  if(!selected)return;
@@ -399,7 +434,6 @@ function openMangaPage(id,updateHistory=true){
  );
 
  const main=related.find(r=>r.image)||selected;
-
  const cover=main.image
   ?`<img class="manga-detail-cover" src="${main.image}" alt="Capa de ${escapeHtml(selected.title)}">`
   :`<div class="manga-detail-placeholder">${escapeHtml(selected.title)}</div>`;
@@ -408,18 +442,9 @@ function openMangaPage(id,updateHistory=true){
 
  const stats=details?`
  <div class="manga-detail-stats">
-  <div class="manga-detail-stat">
-   <span class="manga-detail-stat-label">Capítulos</span>
-   <span class="manga-detail-stat-value">${details.chapters}</span>
-  </div>
-  <div class="manga-detail-stat">
-   <span class="manga-detail-stat-label">Volumes</span>
-   <span class="manga-detail-stat-value">${details.volumes}</span>
-  </div>
-  <div class="manga-detail-stat">
-   <span class="manga-detail-stat-label">Status</span>
-   <span class="manga-detail-stat-value">${escapeHtml(details.status)}</span>
-  </div>
+  <div class="manga-detail-stat"><span class="manga-detail-stat-label">Capítulos</span><span class="manga-detail-stat-value">${details.chapters}</span></div>
+  <div class="manga-detail-stat"><span class="manga-detail-stat-label">Volumes</span><span class="manga-detail-stat-value">${details.volumes}</span></div>
+  <div class="manga-detail-stat"><span class="manga-detail-stat-label">Status</span><span class="manga-detail-stat-value">${escapeHtml(details.status)}</span></div>
  </div>`:'';
 
  document.querySelectorAll('.page').forEach(el=>el.classList.add('hidden'));
@@ -427,31 +452,21 @@ function openMangaPage(id,updateHistory=true){
  updateNav('');
 
  document.getElementById('mangaPageContent').innerHTML=`
- <div class="manga-detail-hero">
-  <div>${cover}</div>
-  <div class="manga-detail-info">
-   <div class="eyebrow">MANGASPACE · BIBLIOTECA</div>
-   <h1>${escapeHtml(selected.title)}</h1>
-   <div class="manga-detail-meta">${escapeHtml(selected.author||'Autor não informado')} · ${escapeHtml(selected.genre||'Mangá')}</div>
-   <div class="manga-detail-rating">${ratingMarkup(selected.rating)} <span style="color:#888;font-size:12px">/ 10</span></div>
-   <p class="manga-detail-description">Explore a obra e confira as opiniões dos leitores do MangaSpace.</p>
-   ${stats}
-   <button class="btn secondary" id="goToReviews">Ver reviews ↓</button>
-  </div>
- </div>
- <section class="manga-detail-review" id="fullMangaReview">
-  <div class="eyebrow">OPINIÕES DOS LEITORES</div>
-  <h2>Reviews de ${escapeHtml(selected.title)}</h2>
-  <div class="manga-review-list">
-   ${related.map(r=>`<article class="manga-review-item">
-    <div class="review-label">${r.seed?'MangaSpace':'Comunidade'} · ${formatDate(r.date)}</div>
-    <h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3>
-    <div class="review-score">${ratingMarkup(r.rating)} / 10</div>
-    <p>${escapeHtml(r.review||'')}</p>
-    ${r.seed?'':`<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}
-   </article>`).join('')}
-  </div>
- </section>`;
+ <div class="manga-detail-hero"><div>${cover}</div><div class="manga-detail-info">
+ <div class="eyebrow">MANGASPACE · BIBLIOTECA</div>
+ <h1>${escapeHtml(selected.title)}</h1>
+ <div class="manga-detail-meta">${escapeHtml(selected.author||'Autor não informado')} · ${escapeHtml(selected.genre||'Mangá')}</div>
+ <div class="manga-detail-rating">${ratingMarkup(selected.rating)} <span style="color:#888;font-size:12px">/ 10</span></div>
+ <p class="manga-detail-description">Explore a obra e confira as opiniões dos leitores do MangaSpace.</p>
+ ${stats}
+ <button class="btn secondary" id="goToReviews">Ver reviews ↓</button>
+ </div></div>
+ <section class="manga-detail-review" id="fullMangaReview"><div class="eyebrow">OPINIÕES DOS LEITORES</div>
+ <h2>Reviews de ${escapeHtml(selected.title)}</h2><div class="manga-review-list">
+ ${related.map(r=>`<article class="manga-review-item"><div class="review-label">${r.seed?'MangaSpace':'Comunidade'} · ${formatDate(r.date)}</div>
+ <h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3><div class="review-score">${ratingMarkup(r.rating)} / 10</div><p>${escapeHtml(r.review||'')}</p>
+ ${r.seed?'':`<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}</article>`).join('')}
+ </div></section>`;
 
  document.getElementById('goToReviews').addEventListener('click',()=>{
   document.getElementById('fullMangaReview').scrollIntoView({behavior:'smooth'});
@@ -462,14 +477,9 @@ function openMangaPage(id,updateHistory=true){
    userReviews=userReviews.filter(r=>r.id!==btn.dataset.id);
    saveReviews();
    renderAll();
-
-   const remaining=allReviews().find(r=>
-    r.title.toLowerCase()===selected.title.toLowerCase()
-   );
-
+   const remaining=allReviews().find(r=>r.title.toLowerCase()===selected.title.toLowerCase());
    if(remaining)openMangaPage(remaining.id,false);
    else setPage('library');
-
    showToast('Review excluída.');
   }
  }));
@@ -486,18 +496,19 @@ function handleRoute(){
   let id;
   try{id=decodeURIComponent(match[1])}
   catch(e){setPage('home',false);return}
-
   if(findReview(id)){openMangaPage(id,false);return}
  }
 
  const routes={'#inicio':'home','#mangas':'library','#reviews':'reviews','#sobre':'about'};
  setPage(routes[hash]||'home',false);
 }
+
 function navigate(page){
  const hashes={home:'#inicio',library:'#mangas',reviews:'#reviews',about:'#sobre'};
  if(location.hash===hashes[page])setPage(page,false);
  else setPage(page);
 }
+
 function openReview(){
  document.getElementById('reviewModal').classList.add('open');
  setTimeout(()=>document.getElementById('mangaTitle').focus(),50);
@@ -510,6 +521,74 @@ function showToast(msg){
  clearTimeout(window.toastTimer);
  window.toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
+
+/* Busca com sugestões em tempo real */
+const searchInput=document.getElementById('searchInput');
+const searchSuggestions=document.getElementById('searchSuggestions');
+
+function renderSearchSuggestions(){
+ const query=searchInput.value.trim().toLocaleLowerCase('pt-BR');
+
+ if(!query){
+  searchSuggestions.innerHTML='';
+  searchSuggestions.classList.remove('show');
+  return;
+ }
+
+ const matches=uniqueManga().filter(m=>
+  m.title.toLocaleLowerCase('pt-BR').includes(query)
+ );
+
+ if(!matches.length){
+  searchSuggestions.innerHTML='<div class="search-no-results">Não encontrado</div>';
+  searchSuggestions.classList.add('show');
+  return;
+ }
+
+ searchSuggestions.innerHTML=matches.map(m=>{
+  const cover=m.image
+   ?`<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`
+   :`<span>${escapeHtml(m.title)}</span>`;
+
+  return `<button type="button" class="search-suggestion" data-suggestion="${escapeHtml(m.id)}">
+   <span class="search-suggestion-cover">${cover}</span>
+   <span class="search-suggestion-name">${escapeHtml(m.title)}</span>
+  </button>`;
+ }).join('');
+
+ searchSuggestions.classList.add('show');
+
+ searchSuggestions.querySelectorAll('[data-suggestion]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   const id=btn.dataset.suggestion;
+   if(findReview(id)){
+    searchSuggestions.classList.remove('show');
+    searchSuggestions.innerHTML='';
+    searchInput.value='';
+    searchTerm='';
+    renderAll();
+    document.getElementById('searchBox').classList.remove('expanded');
+    openMangaPage(id);
+   }
+  });
+ });
+}
+
+searchInput.addEventListener('input',()=>{
+ searchTerm=searchInput.value.trim();
+ renderAll();
+ renderSearchSuggestions();
+});
+
+searchInput.addEventListener('focus',()=>{
+ if(searchInput.value.trim())renderSearchSuggestions();
+});
+
+document.addEventListener('click',e=>{
+ if(!document.getElementById('searchWrap').contains(e.target)){
+  searchSuggestions.classList.remove('show');
+ }
+});
 
 document.getElementById('year').textContent=new Date().getFullYear();
 
@@ -529,35 +608,32 @@ document.getElementById('footerLogo').addEventListener('click',e=>{
 document.getElementById('backToLibrary').addEventListener('click',()=>navigate('library'));
 document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('show'));
 
-document.getElementById('searchInput').addEventListener('input',e=>{
- searchTerm=e.target.value.trim();
- renderAll();
-});
-
-document.getElementById('searchInput').addEventListener('keydown',e=>{
+searchInput.addEventListener('keydown',e=>{
  if(e.key!=='Enter')return;
  e.preventDefault();
 
- const query=e.target.value.trim();
+ const query=searchInput.value.trim();
  if(!query)return;
 
  const manga=findMangaByTitle(query);
 
  if(manga){
-  document.getElementById('searchInput').value='';
+  searchSuggestions.classList.remove('show');
+  searchSuggestions.innerHTML='';
+  searchInput.value='';
   searchTerm='';
   renderAll();
-  openMangaPage(manga.id);
   document.getElementById('searchBox').classList.remove('expanded');
+  openMangaPage(manga.id);
  }else{
-  showToast('Nenhum mangá encontrado com esse nome.');
+  renderSearchSuggestions();
  }
 });
 
 document.getElementById('searchBox').addEventListener('click',()=>{
  if(innerWidth<=650){
   document.getElementById('searchBox').classList.add('expanded');
-  document.getElementById('searchInput').focus();
+  searchInput.focus();
  }
 });
 
@@ -580,6 +656,7 @@ document.querySelectorAll('.modal-backdrop').forEach(b=>
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){
   document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
+  searchSuggestions.classList.remove('show');
  }
 });
 
@@ -597,12 +674,10 @@ document.getElementById('reviewForm').addEventListener('submit',async e=>{
    showToast('Escolha um arquivo de imagem.');
    return;
   }
-
   if(file.size>1.5*1024*1024){
    showToast('A imagem deve ter até 1,5 MB.');
    return;
   }
-
   try{
    image=await new Promise((resolve,reject)=>{
     const reader=new FileReader();
@@ -646,7 +721,9 @@ document.getElementById('reviewForm').addEventListener('submit',async e=>{
  document.getElementById('mangaRating').value='9.0';
  closeModal('reviewModal');
  searchTerm='';
- document.getElementById('searchInput').value='';
+ searchInput.value='';
+ searchSuggestions.innerHTML='';
+ searchSuggestions.classList.remove('show');
  renderAll();
  openMangaPage(item.id);
  showToast('Review publicada neste navegador!');
