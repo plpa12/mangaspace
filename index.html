@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -218,7 +217,7 @@ header{background:rgba(13,17,19,.94);border-bottom:1px solid #20272c}
 .cover{background:#111619;aspect-ratio:2/2.45}
 
 /* AJUSTE: mostra a capa inteira sem cortes e mantém o tamanho do slot */
-.cover img{width:100%;height:100%;object-fit:fill;display:block}
+.cover img{width:100%;height:100%;object-fit:contain;display:block}
 
 .manga-info{padding:9px 10px 10px;background:linear-gradient(180deg,#20272c,#171d21)}
 .manga-info h3{font-size:12px;color:#f0f2f3;margin-bottom:3px}
@@ -417,7 +416,7 @@ function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||'
 function saveReviews(){try{localStorage.setItem(storageKey,JSON.stringify(userReviews));return true}catch(e){showToast('Armazenamento cheio. Tente uma imagem menor.');return false}}
 function allReviews(){return [...userReviews,...starterManga]}
 function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function ratingMarkup(r){return `<span class="star">★</span> ${Number(r).toFixed(1)}`}
+function ratingMarkup(r){return <span class="star">★</span> ${Number(r).toFixed(1)}}
 function formatDate(date){try{return new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return date||''}}
 function findReview(id){return allReviews().find(m=>m.id===id)}
 
@@ -442,13 +441,13 @@ function findMangaByTitle(query){
 
 function mangaCard(m){
  return `<article class="manga-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
- <div class="cover">${m.image?`<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="cover-placeholder">${escapeHtml(m.title)}</div>`}</div>
+ <div class="cover">${m.image?<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">:<div class="cover-placeholder">${escapeHtml(m.title)}</div>}</div>
  <div class="manga-info"><h3>${escapeHtml(m.title)}</h3><div class="author">${escapeHtml(m.author||'Autor não informado')}</div><div class="rating">${ratingMarkup(m.rating)}</div><span class="tag">${escapeHtml(m.genre||'Mangá')}</span></div></article>`;
 }
 
 function reviewCard(m){
  return `<article class="review-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
- ${m.image?`<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>`}
+ ${m.image?<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">:<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>}
  <div class="review-content"><span class="review-label">Review · ${escapeHtml(m.genre||'Mangá')}</span><h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p><div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
 }
 
@@ -488,7 +487,7 @@ function renderManga(){
 
  const fillSlots=(list,count)=>{
   const html=list.map(mangaCard);
-  for(let i=html.length;i<count;i++)html.push(`<article class="manga-card slot-card" aria-hidden="true"><div class="cover"><div class="cover-placeholder">Espaço disponível</div></div><div class="manga-info"><h3>Em breve</h3><div class="author">Nova obra</div><div class="rating">—</div><span class="tag">A adicionar</span></div></article>`);
+  for(let i=html.length;i<count;i++)html.push(<article class="manga-card slot-card" aria-hidden="true"><div class="cover"><div class="cover-placeholder">Espaço disponível</div></div><div class="manga-info"><h3>Em breve</h3><div class="author">Nova obra</div><div class="rating">—</div><span class="tag">A adicionar</span></div></article>);
   return html.join('');
  };
  document.getElementById('featuredGrid').innerHTML=fillSlots(featured,5);
@@ -501,13 +500,13 @@ function renderManga(){
   {name:'Em breve',works:'Novo autor',label:'A adicionar'}
  ];
  document.getElementById('popularGrid').innerHTML=acclaimedAuthors.map((author,index)=>
-  `<article class="manga-card author-card" aria-label="${escapeHtml(author.name)}"><div class="author-portrait">${index<3?'Retrato em breve':'Espaço disponível'}</div><div class="manga-info"><h3>${escapeHtml(author.name)}</h3><div class="author-role">${escapeHtml(author.works)}</div><span class="tag">${escapeHtml(author.label)}</span></div></article>`
+  <article class="manga-card author-card" aria-label="${escapeHtml(author.name)}"><div class="author-portrait">${index<3?'Retrato em breve':'Espaço disponível'}</div><div class="manga-info"><h3>${escapeHtml(author.name)}</h3><div class="author-role">${escapeHtml(author.works)}</div><span class="tag">${escapeHtml(author.label)}</span></div></article>
  ).join('');
 
  document.getElementById('libraryGrid').innerHTML=
   items.length?items.map(mangaCard).join(''):'<div class="empty">Nenhum mangá encontrado. Tente outra busca ou publique uma review.</div>';
 
- document.getElementById('libraryCount').textContent=`Todos os mangás · ${items.length}`;
+ document.getElementById('libraryCount').textContent=Todos os mangás · ${items.length};
  attachMangaClicks(document.getElementById('featuredGrid'));
  attachMangaClicks(document.getElementById('libraryGrid'));
 }
@@ -562,8 +561,8 @@ function openMangaPage(id,updateHistory=true){
 
  const main=related.find(r=>r.image)||selected;
  const cover=main.image
-  ?`<img class="manga-detail-cover" src="${main.image}" alt="Capa de ${escapeHtml(selected.title)}">`
-  :`<div class="manga-detail-placeholder">${escapeHtml(selected.title)}</div>`;
+  ?<img class="manga-detail-cover" src="${main.image}" alt="Capa de ${escapeHtml(selected.title)}">
+  :<div class="manga-detail-placeholder">${escapeHtml(selected.title)}</div>;
 
  const details=mangaDetails[selected.title.trim().toLocaleLowerCase('pt-BR')];
 
@@ -592,7 +591,7 @@ function openMangaPage(id,updateHistory=true){
  <h2>Reviews de ${escapeHtml(selected.title)}</h2><div class="manga-review-list">
  ${related.map(r=>`<article class="manga-review-item"><div class="review-label">${r.seed?'MangaSpace':'Comunidade'} · ${formatDate(r.date)}</div>
  <h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3><div class="review-score">${ratingMarkup(r.rating)} / 10</div><p>${escapeHtml(r.review||'')}</p>
- ${r.seed?'':`<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}</article>`).join('')}
+ ${r.seed?'':<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>}</article>`).join('')}
  </div></section>`;
 
  document.getElementById('goToReviews').addEventListener('click',()=>{
@@ -673,8 +672,8 @@ function renderSearchSuggestions(){
 
  searchSuggestions.innerHTML=matches.map(m=>{
   const cover=m.image
-   ?`<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`
-   :`<span>${escapeHtml(m.title)}</span>`;
+   ?<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">
+   :<span>${escapeHtml(m.title)}</span>;
 
   return `<button type="button" class="search-suggestion" data-suggestion="${escapeHtml(m.id)}">
    <span class="search-suggestion-cover">${cover}</span>
