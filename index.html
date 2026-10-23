@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -33,8 +34,8 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .search-suggestions.show{display:block}
 .search-suggestion{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;background:white;border:0;text-align:left;cursor:pointer}
 .search-suggestion:hover,.search-suggestion:focus{background:#f7f7f5;outline:none}
-.search-suggestion-cover{width:42px;height:56px;flex-shrink:0;border-radius:6px;object-fit:cover;background:#f0f0ee;display:grid;place-items:center;overflow:hidden;color:#888;font-size:9px;text-align:center;overflow-wrap:anywhere}
-.search-suggestion-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.search-suggestion-cover{width:42px;height:56px;flex-shrink:0;border-radius:6px;object-fit:contain;background:#f0f0ee;display:grid;place-items:center;overflow:hidden;color:#888;font-size:9px;text-align:center;overflow-wrap:anywhere}
+.search-suggestion-cover img{width:100%;height:100%;object-fit:contain;display:block}
 .search-suggestion-name{font-size:13px;font-weight:650;overflow-wrap:anywhere}
 .search-no-results{padding:16px 12px;color:#777;font-size:13px}
 .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:54px 0 58px}
@@ -57,9 +58,9 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 #featuredGrid{grid-template-columns:repeat(5,minmax(0,1fr))}
 .manga-card{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white;transition:.2s;cursor:pointer;min-width:0}
 .manga-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #0000000a}
-.cover{aspect-ratio:3/4;background:#f0f0ee;overflow:hidden}
-.cover img{width:100%;height:100%;object-fit:cover;display:block}
-.cover-placeholder{height:100%;min-height:100px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#888;font-size:13px;background:linear-gradient(145deg,#f2f2f0,#dededb)}
+.cover{aspect-ratio:2/3;background:#f0f0ee;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cover img{width:100%;height:100%;object-fit:contain;display:block}
+.cover-placeholder{height:100%;min-height:100px;width:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#888;font-size:13px;background:linear-gradient(145deg,#f2f2f0,#dededb)}
 .manga-info{padding:12px}
 .manga-info h3{font-size:14px;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .author{font-size:11px;color:#858585}
@@ -67,10 +68,10 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .star{color:#e6a323}
 .tag{display:inline-block;background:#f4f4f4;border-radius:99px;padding:3px 8px;font-size:10px;margin-top:10px;color:#555}
 .review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.review-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:100px 1fr;gap:15px;cursor:pointer;transition:.2s}
+.review-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:100px 1fr;gap:15px;cursor:pointer;transition:.2s;min-width:0}
 .review-card:hover{border-color:#ccc;transform:translateY(-2px)}
-.review-thumb{width:100px;aspect-ratio:3/4;object-fit:cover;border-radius:9px;background:#eee}
-.review-thumb.placeholder{display:grid;place-items:center;text-align:center;color:#888;font-size:11px;padding:8px}
+.review-thumb{width:100px;aspect-ratio:2/3;height:auto;align-self:start;object-fit:contain;border-radius:9px;background:#eee;display:block}
+.review-thumb.placeholder{display:grid;place-items:center;text-align:center;color:#888;font-size:11px;padding:8px;overflow-wrap:anywhere}
 .review-content{min-width:0;display:flex;flex-direction:column}
 .review-label{font-size:11px;color:#888}
 .review-content h3{font-size:14px;line-height:1.35;margin:6px 0}
@@ -153,7 +154,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#888;font-size:12px
  #featuredGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .section-head h2{font-size:20px}
  .review-grid{grid-template-columns:1fr}
- .review-card{grid-template-columns:85px 1fr;gap:12px;padding:11px}
+ .review-card{grid-template-columns:85px minmax(0,1fr);gap:12px;padding:11px}
  .review-thumb{width:85px}
  .community{padding:22px;align-items:flex-start;flex-direction:column}
  .footer-inner{align-items:flex-start;flex-direction:column}
