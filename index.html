@@ -322,7 +322,83 @@ footer{border-color:#252d32;color:#8e989f}
  #recentReviews,#latestReviews{grid-template-columns:1fr}
  .hero h1{font-size:31px}
 }
+/* Alinhamento do título e botão da página Reviews */
+.reviews-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 
+.reviews-heading-row h1 {
+  margin: 8px 0;
+}
+
+#reviewsAdd {
+  flex-shrink: 0;
+}
+
+/* Pesquisa e seleção de mangá no formulário */
+.manga-picker {
+  position: relative;
+}
+
+#mangaTitle {
+  padding-right: 40px;
+}
+
+.manga-picker .search-suggestions {
+  top: calc(100% + 2px);
+  max-height: 260px;
+}
+
+.manga-selected {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #39464e;
+  border-radius: 10px;
+  background: #1b2227;
+}
+
+.manga-selected.show {
+  display: flex;
+}
+
+.manga-selected img {
+  width: 36px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.manga-selected-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.manga-selected button {
+  border: 0;
+  background: transparent;
+  color: #c4ccd1;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 650px) {
+  .reviews-heading-row {
+    align-items: flex-start;
+  }
+
+  #reviewsAdd {
+    font-size: 12px;
+    padding: 9px 13px;
+  }
+}
 </style>
 </head>
 <body>
@@ -390,7 +466,6 @@ footer{border-color:#252d32;color:#8e989f}
   </section>
   <section class="community" id="communitySection">
    <div><h2>Uma comunidade feita por leitores.</h2><p>Publique sua opinião, compartilhe uma imagem e ajude alguém a escolher o próximo mangá.</p></div>
-   <button class="btn" id="communityAdd">Escrever uma review ↗</button>
   </section>
  </section>
 
@@ -400,7 +475,16 @@ footer{border-color:#252d32;color:#8e989f}
  </section>
 
  <section id="reviewsPage" class="page hidden">
-  <div class="page-heading"><div class="eyebrow">OPINIÕES DA COMUNIDADE</div><h1>Todas as reviews</h1><p>Leia o que os leitores estão achando de suas obras favoritas.</p></div>
+  <div class="page-heading">
+  <div class="eyebrow">OPINIÕES DA COMUNIDADE</div>
+
+  <div class="reviews-heading-row">
+    <h1>Todas as reviews</h1>
+    <button class="btn" id="reviewsAdd" type="button">＋ Escrever uma review</button>
+  </div>
+
+  <p>Leia o que os leitores estão achando de suas obras favoritas.</p>
+</div>
   <section class="section"><div class="review-grid" id="allReviewsGrid"></div></section>
  </section>
 
@@ -409,8 +493,7 @@ footer{border-color:#252d32;color:#8e989f}
   <div class="about-content">
    <h2>Uma biblioteca feita por leitores</h2>
    <p>O MangaSpace nasceu para reunir obras marcantes e opiniões de quem ama mangás. Explore a biblioteca, descubra novas leituras e veja diferentes pontos de vista sobre cada história.</p>
-   <p>Você também pode publicar uma review com sua nota, seu texto e uma imagem de capa. Suas publicações ficam salvas no navegador em que você as criou.</p>
-   <button class="btn" id="aboutAdd">Escrever uma review ↗</button>
+   <p>Você também pode publicar uma review com sua nota e sua opinião sobre a obra. Suas publicações ficam salvas no navegador em que você as criou.</p>
   </div>
  </section>
 
@@ -426,18 +509,83 @@ footer{border-color:#252d32;color:#8e989f}
  <div class="modal">
   <div class="modal-head"><h2 id="formTitle">Publicar uma review</h2><button class="close" id="closeReview" aria-label="Fechar">×</button></div>
   <form id="reviewForm">
-   <div class="form-grid">
-    <div class="field"><label for="mangaTitle">Nome do mangá *</label><input id="mangaTitle" required maxlength="80" placeholder="Ex.: Vagabond"></div>
-    <div class="field"><label for="mangaAuthor">Autor</label><input id="mangaAuthor" maxlength="80" placeholder="Nome do autor"></div>
-   </div>
-   <div class="form-grid">
-    <div class="field"><label for="mangaRating">Sua nota (0–10) *</label><input id="mangaRating" type="number" min="0" max="10" step=".1" value="9.0" required></div>
-    <div class="field"><label for="mangaGenre">Gênero</label><input id="mangaGenre" maxlength="40" placeholder="Seinen, drama..."></div>
-   </div>
-   <div class="field"><label for="mangaImage">Imagem da capa (arquivo)</label><input id="mangaImage" type="file" accept="image/*"><span class="helper">A imagem fica salva neste navegador. Para compartilhar reviews entre visitantes, será necessário conectar um banco de dados.</span></div>
-   <div class="field"><label for="mangaReviewTitle">Título da review *</label><input id="mangaReviewTitle" required maxlength="120" placeholder="O que torna essa história especial?"></div>
-   <div class="field"><label for="mangaReviewText">Sua review *</label><textarea id="mangaReviewText" required maxlength="5000" placeholder="Conte o que achou da arte, história, personagens..."></textarea></div>
-   <div class="form-actions"><span class="helper">* Campos obrigatórios</span><div style="display:flex;gap:8px"><button type="button" class="btn secondary" id="cancelReview">Cancelar</button><button type="submit" class="btn">Publicar review ↗</button></div></div>
+   <div class="field">
+  <label for="mangaTitle">Mangá *</label>
+
+  <div class="manga-picker">
+    <input
+      id="mangaTitle"
+      type="text"
+      required
+      maxlength="80"
+      placeholder="Ex.: Vagabond"
+      autocomplete="off"
+      aria-label="Pesquisar mangá"
+      aria-autocomplete="list"
+      aria-controls="mangaSuggestions"
+    >
+
+    <div
+      class="search-suggestions"
+      id="mangaSuggestions"
+      role="listbox"
+    ></div>
+  </div>
+
+  <div class="manga-selected" id="selectedManga">
+    <img id="selectedMangaImage" alt="">
+    <span class="manga-selected-name" id="selectedMangaName"></span>
+    <button type="button" id="changeManga">Alterar</button>
+  </div>
+</div>
+
+<div class="field">
+  <label for="mangaRating">Nota *</label>
+  <input
+    id="mangaRating"
+    type="number"
+    min="0"
+    max="10"
+    step="1"
+    placeholder="De 0 a 10"
+    required
+  >
+</div>
+
+<div class="field">
+  <label for="mangaReviewTitle">Título *</label>
+  <input
+    id="mangaReviewTitle"
+    type="text"
+    required
+    maxlength="120"
+    placeholder="O que tornar essa história especial?"
+  >
+</div>
+
+<div class="field">
+  <label for="mangaReviewText">Sua review *</label>
+  <textarea
+    id="mangaReviewText"
+    required
+    maxlength="5000"
+    placeholder="Conte o que achou da arte, história e personagens..."
+  ></textarea>
+</div>
+
+<div class="form-actions">
+  <span class="helper">* Campos obrigatórios</span>
+
+  <div style="display:flex;gap:8px">
+    <button type="button" class="btn secondary" id="cancelReview">
+      Cancelar
+    </button>
+
+    <button type="submit" class="btn">
+      Publicar review
+    </button>
+  </div>
+</div>
   </form>
  </div>
 </div>
@@ -726,10 +874,116 @@ function navigate(page){
  else setPage(page);
 }
 
+let selectedManga = null;
+
 function openReview(){
- document.getElementById('reviewModal').classList.add('open');
- setTimeout(()=>document.getElementById('mangaTitle').focus(),50);
+ const modal = document.getElementById('reviewModal');
+ const input = document.getElementById('mangaTitle');
+
+ selectedManga = null;
+ input.value = '';
+
+ document.getElementById('mangaRating').value = '';
+ document.getElementById('mangaReviewTitle').value = '';
+ document.getElementById('mangaReviewText').value = '';
+
+ document.getElementById('selectedManga').classList.remove('show');
+
+ const suggestions = document.getElementById('mangaSuggestions');
+ suggestions.innerHTML = '';
+ suggestions.classList.remove('show');
+
+ modal.classList.add('open');
+ setTimeout(() => input.focus(), 50);
 }
+
+function renderMangaSuggestions(){
+ const input = document.getElementById('mangaTitle');
+ const suggestions = document.getElementById('mangaSuggestions');
+ const query = input.value.trim().toLocaleLowerCase('pt-BR');
+
+ selectedManga = null;
+ document.getElementById('selectedManga').classList.remove('show');
+
+ if(!query){
+  suggestions.innerHTML = '';
+  suggestions.classList.remove('show');
+  return;
+ }
+
+ const matches = uniqueManga().filter(m =>
+  (m.title + ' ' + (m.author || '') + ' ' + (m.genre || ''))
+   .toLocaleLowerCase('pt-BR')
+   .includes(query)
+ );
+
+ if(!matches.length){
+  suggestions.innerHTML =
+   '<div class="search-no-results">Nenhum mangá encontrado.</div>';
+  suggestions.classList.add('show');
+  return;
+ }
+
+ suggestions.innerHTML = matches.map(m => `
+  <button
+   type="button"
+   class="search-suggestion"
+   data-pick-manga="${escapeHtml(m.id)}"
+   role="option"
+  >
+   <span class="search-suggestion-cover">
+    ${m.image
+      ? `<img src="${escapeHtml(m.image)}" alt="">`
+      : escapeHtml(m.title)}
+   </span>
+   <span class="search-suggestion-name">
+    ${escapeHtml(m.title)}
+   </span>
+  </button>
+ `).join('');
+
+ suggestions.classList.add('show');
+
+ suggestions.querySelectorAll('[data-pick-manga]').forEach(button => {
+  button.addEventListener('click', () => {
+   const manga = uniqueManga().find(
+    m => m.id === button.dataset.pickManga
+   );
+
+   if(!manga) return;
+
+   selectedManga = manga;
+   input.value = manga.title;
+
+   document.getElementById('selectedMangaName').textContent = manga.title;
+
+   const image = document.getElementById('selectedMangaImage');
+   image.src = manga.image || '';
+   image.alt = manga.image ? 'Capa de ' + manga.title : '';
+   image.style.display = manga.image ? 'block' : 'none';
+
+   document.getElementById('selectedManga').classList.add('show');
+
+   suggestions.innerHTML = '';
+   suggestions.classList.remove('show');
+  });
+ });
+}
+
+document.getElementById('mangaTitle').addEventListener(
+ 'input',
+ renderMangaSuggestions
+);
+
+document.getElementById('changeManga').addEventListener('click', () => {
+ selectedManga = null;
+
+ const input = document.getElementById('mangaTitle');
+ input.value = '';
+ document.getElementById('selectedManga').classList.remove('show');
+
+ input.focus();
+});
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function showToast(msg){
  const el=document.getElementById('toast');
@@ -854,9 +1108,7 @@ document.getElementById('showAllManga').addEventListener('click',()=>navigate('l
 document.getElementById('latestReviewsBtn').addEventListener('click',()=>navigate('reviews'));
 
 
-['communityAdd','aboutAdd'].forEach(id=>
- document.getElementById(id).addEventListener('click',openReview)
-);
+document.getElementById('reviewsAdd').addEventListener('click', openReview);
 
 
 ['closeReview','cancelReview'].forEach(id=>
@@ -879,52 +1131,50 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('popstate',handleRoute);
 window.addEventListener('hashchange',handleRoute);
 
-document.getElementById('reviewForm').addEventListener('submit',async e=>{
+document.getElementById('reviewForm').addEventListener('submit', e => {
  e.preventDefault();
 
- const file=document.getElementById('mangaImage').files[0];
- let image='';
+ const ratingInput = document.getElementById('mangaRating');
+ const ratingValue = ratingInput.value;
+ const rating = Number(ratingValue);
 
- if(file){
-  if(!file.type.startsWith('image/')){
-   showToast('Escolha um arquivo de imagem.');
-   return;
-  }
-  if(file.size>1.5*1024*1024){
-   showToast('A imagem deve ter até 1,5 MB.');
-   return;
-  }
-  try{
-   image=await new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onload=()=>resolve(reader.result);
-    reader.onerror=reject;
-    reader.readAsDataURL(file);
-   });
-  }catch(err){
-   showToast('Não foi possível carregar a imagem.');
-   return;
-  }
- }
+ const reviewTitle = document.getElementById('mangaReviewTitle').value.trim();
+ const reviewText = document.getElementById('mangaReviewText').value.trim();
 
- const item={
-  id:'review-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),
-  title:document.getElementById('mangaTitle').value.trim(),
-  author:document.getElementById('mangaAuthor').value.trim(),
-  rating:Number(document.getElementById('mangaRating').value),
-  genre:document.getElementById('mangaGenre').value.trim(),
-  image,
-  reviewTitle:document.getElementById('mangaReviewTitle').value.trim(),
-  review:document.getElementById('mangaReviewText').value.trim(),
-  date:new Date().toISOString().slice(0,10),
-  seed:false
- };
-
- if(!item.title||!item.reviewTitle||!item.review||
-    !Number.isFinite(item.rating)||item.rating<0||item.rating>10){
-  showToast('Confira os campos obrigatórios e a nota.');
+ if(!selectedManga || !uniqueManga().some(m => m.id === selectedManga.id)){
+  showToast('Selecione um mangá existente na lista.');
+  document.getElementById('mangaTitle').focus();
   return;
  }
+
+ if(
+  ratingValue === '' ||
+  !Number.isInteger(rating) ||
+  rating < 0 ||
+  rating > 10
+ ){
+  showToast('A nota deve ser um número inteiro de 0 a 10.');
+  ratingInput.focus();
+  return;
+ }
+
+ if(!reviewTitle || !reviewText){
+  showToast('Preencha o título e sua review.');
+  return;
+ }
+
+ const item = {
+  id: 'review-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
+  title: selectedManga.title,
+  author: selectedManga.author || '',
+  rating,
+  genre: selectedManga.genre || 'Mangá',
+  image: selectedManga.image || '',
+  reviewTitle,
+  review: reviewText,
+  date: new Date().toISOString().slice(0,10),
+  seed: false
+ };
 
  userReviews.unshift(item);
 
@@ -933,13 +1183,18 @@ document.getElementById('reviewForm').addEventListener('submit',async e=>{
   return;
  }
 
- e.target.reset();
- document.getElementById('mangaRating').value='9.0';
  closeModal('reviewModal');
- searchTerm='';
- searchInput.value='';
- searchSuggestions.innerHTML='';
+
+ const suggestions = document.getElementById('mangaSuggestions');
+ suggestions.innerHTML = '';
+ suggestions.classList.remove('show');
+
+ selectedManga = null;
+ searchTerm = '';
+ searchInput.value = '';
+ searchSuggestions.innerHTML = '';
  searchSuggestions.classList.remove('show');
+
  renderAll();
  openMangaPage(item.id);
  showToast('Review publicada neste navegador!');
