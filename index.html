@@ -901,7 +901,7 @@ function openMangaPage(id,updateHistory=true){
  <h2>Reviews de ${escapeHtml(selected.title)}</h2><div class="manga-review-list">
  ${related.map(r=>`<article class="manga-review-item"><div class="review-label">${r.ratingOnly?'Nota':(r.seed?'MangaSpace':'Comunidade')} · ${formatDate(r.date)}</div>
  ${r.ratingOnly?'':`<h3>${escapeHtml(r.reviewTitle||'Minha opinião')}</h3>`}<div class="review-score">${ratingMarkup(r.rating)} / 10</div>${r.ratingOnly?'':`<p>${escapeHtml(r.review||'')}</p>`}
- ${r.seed?'':`<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}</article>`).join('')}
+ ${(!currentUser || r.userId !== currentUser.id || r.seed) ? '' : `<button class="btn secondary small delete-related" data-id="${escapeHtml(r.id)}" style="margin-top:15px">Excluir minha review</button>`}</article>`).join('')}
  </div></section>`;
 
  document.getElementById('goToReviews').addEventListener('click',()=>{
