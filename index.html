@@ -712,6 +712,7 @@ function showToast(msg){
 const searchInput=document.getElementById('searchInput');
 const searchSuggestions=document.getElementById('searchSuggestions');
 
+
 function renderSearchSuggestions(){
  const query=searchInput.value.trim().toLocaleLowerCase('pt-BR');
 
@@ -722,11 +723,13 @@ function renderSearchSuggestions(){
  }
 
  const matches=uniqueManga().filter(m=>
-  m.title.toLocaleLowerCase('pt-BR').includes(query)
+  (m.title+' '+(m.author||'')+' '+(m.genre||''))
+   .toLocaleLowerCase('pt-BR').includes(query)
  );
 
  if(!matches.length){
-  searchSuggestions.innerHTML='<div class="search-no-results">Não encontrado</div>';
+  searchSuggestions.innerHTML=
+   '<div class="search-no-results">Nenhum mangá encontrado.</div>';
   searchSuggestions.classList.add('show');
   return;
  }
@@ -747,12 +750,11 @@ function renderSearchSuggestions(){
  searchSuggestions.querySelectorAll('[data-suggestion]').forEach(btn=>{
   btn.addEventListener('click',()=>{
    const id=btn.dataset.suggestion;
+
    if(findReview(id)){
     searchSuggestions.classList.remove('show');
     searchSuggestions.innerHTML='';
     searchInput.value='';
-    searchTerm='';
-    renderAll();
     document.getElementById('searchBox').classList.remove('expanded');
     openMangaPage(id);
    }
@@ -761,8 +763,6 @@ function renderSearchSuggestions(){
 }
 
 searchInput.addEventListener('input',()=>{
- searchTerm=searchInput.value.trim();
- renderAll();
  renderSearchSuggestions();
 });
 
@@ -794,24 +794,21 @@ document.getElementById('footerLogo').addEventListener('click',e=>{
 document.getElementById('backToLibrary').addEventListener('click',()=>navigate('library'));
 document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('show'));
 
+
 searchInput.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){
+  searchSuggestions.classList.remove('show');
+  return;
+ }
+
  if(e.key!=='Enter')return;
  e.preventDefault();
 
- const query=searchInput.value.trim();
- if(!query)return;
+ const firstResult=searchSuggestions.querySelector('[data-suggestion]');
 
- const manga=findMangaByTitle(query);
-
- if(manga){
-  searchSuggestions.classList.remove('show');
-  searchSuggestions.innerHTML='';
-  searchInput.value='';
-  searchTerm='';
-  renderAll();
-  document.getElementById('searchBox').classList.remove('expanded');
-  openMangaPage(manga.id);
- }else{
+ if(firstResult){
+  firstResult.click();
+ }else if(searchInput.value.trim()){
   renderSearchSuggestions();
  }
 });
