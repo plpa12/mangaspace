@@ -1202,7 +1202,8 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('popstate',handleRoute);
 window.addEventListener('hashchange',handleRoute);
 
-document.getElementById('reviewForm').addEventListener('submit', e => {
+
+document.getElementById('reviewForm').addEventListener('submit', async e => {
  e.preventDefault();
 
  const ratingInput = document.getElementById('mangaRating');
@@ -1212,63 +1213,79 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
  const reviewTitle = document.getElementById('mangaReviewTitle').value.trim();
  const reviewText = document.getElementById('mangaReviewText').value.trim();
 
- if(!selectedManga || !uniqueManga().some(m => m.id === selectedManga.id)){
+ if (!currentUser) {
+  showToast('Entre na sua conta para publicar uma review.');
+  setAuthMode('login');
+  document.getElementById('authModal').classList.add('open');
+  return;
+ }
+
+ if (!selectedManga || !uniqueManga().some(m => m.id === selectedManga.id)) {
   showToast('Selecione um mangá existente na lista.');
   document.getElementById('mangaTitle').focus();
   return;
  }
 
- if(
+ if (
   ratingValue === '' ||
   !Number.isInteger(rating) ||
   rating < 0 ||
   rating > 10
- ){
+ ) {
   showToast('A nota deve ser um número inteiro de 0 a 10.');
   ratingInput.focus();
   return;
  }
 
- if(!reviewTitle || !reviewText){
+ if (!reviewTitle || !reviewText) {
   showToast('Preencha o título e sua review.');
   return;
  }
 
- const item = {
-  id: 'review-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
-  title: selectedManga.title,
-  author: selectedManga.author || '',
-  rating,
-  genre: selectedManga.genre || 'Mangá',
-  image: selectedManga.image || '',
-  reviewTitle,
-  review: reviewText,
-  date: new Date().toISOString().slice(0,10),
-  seed: false
- };
+ const submitButton = e.submitter;
+ if (submitButton) submitButton.disabled = true;
 
- userReviews.unshift(item);
+ try {
+  const { data, error } = await supabaseClient
+   .from('reviews')
+   .insert({
+    user_id: currentUser.id,
+    manga_title: selectedManga.title,
+    manga_author: selectedManga.author || '',
+    manga_genre: selectedManga.genre || 'Mangá',
+    manga_image: selectedManga.image || '',
+    rating,
+    review_title: reviewTitle,
+    review_text: reviewText
+   })
+   .select()
+   .single();
 
- if(!saveReviews()){
-  userReviews.shift();
-  return;
+  if (error) throw error;
+
+  await loadSharedReviews();
+
+  closeModal('reviewModal');
+
+  const suggestions = document.getElementById('mangaSuggestions');
+  suggestions.innerHTML = '';
+  suggestions.classList.remove('show');
+
+  selectedManga = null;
+  searchTerm = '';
+  searchInput.value = '';
+  searchSuggestions.innerHTML = '';
+  searchSuggestions.classList.remove('show');
+
+  renderAll();
+  openMangaPage(data.id);
+  showToast('Review publicada com sucesso!');
+ } catch (error) {
+  console.error('Erro ao publicar review:', error);
+  showToast('Não foi possível publicar. Verifique sua conta e as permissões do banco.');
+ } finally {
+  if (submitButton) submitButton.disabled = false;
  }
-
- closeModal('reviewModal');
-
- const suggestions = document.getElementById('mangaSuggestions');
- suggestions.innerHTML = '';
- suggestions.classList.remove('show');
-
- selectedManga = null;
- searchTerm = '';
- searchInput.value = '';
- searchSuggestions.innerHTML = '';
- searchSuggestions.classList.remove('show');
-
- renderAll();
- openMangaPage(item.id);
- showToast('Review publicada neste navegador!');
 });
 
 let authMode = 'login';
