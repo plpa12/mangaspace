@@ -725,7 +725,7 @@ let currentMangaId=null;
 
 function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch(e){return []}}
 function saveReviews(){try{localStorage.setItem(storageKey,JSON.stringify(userReviews));return true}catch(e){showToast('Armazenamento cheio. Tente uma imagem menor.');return false}}
-function allReviews(){return [...userReviews,...starterManga]}
+function allReviews(){return [...userReviews,...sharedReviews,...starterManga]}
 function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function ratingMarkup(r){return `<span class="star">★</span> ${Number(r).toFixed(1)}`}
 function formatDate(date){try{return new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return date||''}}
