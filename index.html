@@ -315,7 +315,21 @@ footer{border-color:#252d32;color:#8e989f}
  #recentReviews,#latestReviews{grid-template-columns:1fr}
  .hero h1{font-size:31px}
 }
-
+/* Slot único: Lançamentos no Brasil */
+.launch-slot {
+  width: 100%;
+  min-height: 190px;
+  border: 1px solid #2c353b;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #1a2024, #111619);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #8e989f;
+  font-size: 13px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -360,8 +374,12 @@ footer{border-color:#252d32;color:#8e989f}
    <div class="manga-grid" id="featuredGrid"></div>
   </section>
   <section class="section" id="recentSection">
-   <div class="section-head"><h2>Reviews recentes</h2><button class="text-link" id="addReviewBtn">Ver todas →</button></div>
-   <div class="review-grid" id="recentReviews"></div>
+   <div class="section-head">
+  <h2>Lançamentos no Brasil</h2>
+</div>
+<div class="launch-slot" id="recentReviews">
+  <span>Novidades em breve</span>
+</div>
    <div class="section-head latest-heading"><h2>Últimas reviews</h2><button class="text-link" id="latestReviewsBtn">Ver todas →</button></div>
    <div class="review-grid" id="latestReviews"></div>
   </section>
