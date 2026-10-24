@@ -1315,12 +1315,57 @@ document.getElementById('authSwitchBtn').addEventListener('click', () => {
   setAuthMode(authMode === 'login' ? 'register' : 'login');
 });
 
-document.getElementById('authForm').addEventListener('submit', event => {
+
+document.getElementById('authForm').addEventListener('submit', async event => {
   event.preventDefault();
 
-  document.getElementById('authMessage').textContent =
-    'A conexão com o sistema de contas será configurada no próximo passo.';
+  const message = document.getElementById('authMessage');
+  const submitButton = document.getElementById('authSubmitBtn');
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const nickname = document.getElementById('authNickname').value.trim();
+
+  message.textContent = '';
+  submitButton.disabled = true;
+
+  try {
+    if (authMode === 'register') {
+      if (nickname.length < 3 || nickname.length > 20) {
+        throw new Error('O nome deve ter entre 3 e 20 caracteres.');
+      }
+
+      const { error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { nickname }
+        }
+      });
+
+      if (error) throw error;
+
+      message.textContent =
+        'Cadastro iniciado! Confira seu e-mail para confirmar a conta.';
+      document.getElementById('authPassword').value = '';
+    } else {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      message.textContent = 'Login realizado com sucesso!';
+      closeModal('authModal');
+      showToast('Você entrou na sua conta!');
+    }
+  } catch (error) {
+    message.textContent = error.message || 'Não foi possível concluir a operação.';
+  } finally {
+    submitButton.disabled = false;
+  }
 });
+
 
 renderAll();
 handleRoute();
