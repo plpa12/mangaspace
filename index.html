@@ -1329,10 +1329,93 @@ function setAuthMode(mode) {
   document.getElementById('authMessage').textContent = '';
 }
 
+
 document.getElementById('authOpenBtn').addEventListener('click', () => {
-  setAuthMode('login');
-  document.getElementById('authModal').classList.add('open');
+  if (currentUser) {
+    const menu = document.getElementById('accountMenu');
+
+    if (menu) {
+      menu.remove();
+      return;
+    }
+
+    const button = document.getElementById('authOpenBtn');
+    const rect = button.getBoundingClientRect();
+
+    const accountMenu = document.createElement('div');
+    accountMenu.id = 'accountMenu';
+    accountMenu.style.cssText = `
+      position: fixed;
+      top: ${rect.bottom + 8}px;
+      right: ${window.innerWidth - rect.right}px;
+      width: 190px;
+      padding: 8px;
+      background: #151b1e;
+      border: 1px solid #30393d;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px #0008;
+      z-index: 9999;
+      color: #f1f5f6;
+    `;
+
+    accountMenu.innerHTML = `
+      <button type="button" data-account-action="profile"
+        style="display:block;width:100%;padding:11px;border:0;background:none;color:inherit;text-align:left;cursor:pointer">
+        Meu perfil
+      </button>
+      <button type="button" data-account-action="reviews"
+        style="display:block;width:100%;padding:11px;border:0;background:none;color:inherit;text-align:left;cursor:pointer">
+        Minhas reviews
+      </button>
+      <button type="button" data-account-action="logout"
+        style="display:block;width:100%;padding:11px;border:0;background:none;color:inherit;text-align:left;cursor:pointer">
+        Sair da conta
+      </button>
+    `;
+
+    document.body.appendChild(accountMenu);
+
+    accountMenu.addEventListener('click', async event => {
+      const action = event.target.closest('[data-account-action]')?.dataset.accountAction;
+      if (!action) return;
+
+      accountMenu.remove();
+
+      if (action === 'profile') {
+        showToast('A página de perfil será implementada no próximo passo.');
+      }
+
+      if (action === 'reviews') {
+        showToast('A lista de suas reviews será implementada no próximo passo.');
+      }
+
+      if (action === 'logout') {
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) {
+          showToast('Não foi possível sair da conta.');
+          return;
+        }
+
+        await updateAuthButton();
+        showToast('Você saiu da sua conta.');
+      }
+    });
+
+    const closeMenu = event => {
+      if (!accountMenu.contains(event.target) && event.target !== button) {
+        accountMenu.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    };
+
+    setTimeout(() => document.addEventListener('click', closeMenu), 0);
+  } else {
+    setAuthMode('login');
+    document.getElementById('authModal').classList.add('open');
+  }
 });
+
 
 document.getElementById('closeAuth').addEventListener('click', () => {
   closeModal('authModal');
