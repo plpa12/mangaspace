@@ -908,16 +908,56 @@ function openMangaPage(id,updateHistory=true){
   document.getElementById('fullMangaReview').scrollIntoView({behavior:'smooth'});
  });
 
- document.querySelectorAll('.delete-related').forEach(btn=>btn.addEventListener('click',()=>{
-  if(confirm('Excluir esta review deste navegador?')){
-   userReviews=userReviews.filter(r=>r.id!==btn.dataset.id);
-   saveReviews();
-   renderAll();
-   const remaining=allReviews().find(r=>r.title.toLowerCase()===selected.title.toLowerCase());
-   if(remaining)openMangaPage(remaining.id,false);
-   else setPage('library');
-   showToast('Review excluída.');
+ document.querySelectorAll('.delete-related').forEach(btn=>btn.addEventListener('click',async()=>{
+  if(!currentUser){
+   showToast('Entre na sua conta para excluir sua review.');
+   return;
   }
+
+  if(!confirm('Excluir sua review do MangaSpace para todos os visitantes?')) return;
+
+  const reviewId = btn.dataset.id;
+  const sharedReview = sharedReviews.find(r=>String(r.id)===String(reviewId));
+
+  if(sharedReview){
+   if(sharedReview.userId !== currentUser.id){
+    showToast('Você só pode excluir suas próprias reviews.');
+    return;
+   }
+
+   const {error} = await supabaseClient
+    .from('reviews')
+    .delete()
+    .eq('id', reviewId)
+    .eq('user_id', currentUser.id);
+
+   if(error){
+    console.error('Erro ao excluir review:', error);
+    showToast('Não foi possível excluir a review.');
+    return;
+   }
+
+   sharedReviews = sharedReviews.filter(r=>String(r.id)!==String(reviewId));
+  } else {
+   const localReview = userReviews.find(r=>String(r.id)===String(reviewId));
+
+   if(!localReview){
+    showToast('Review não encontrada.');
+    return;
+   }
+
+   userReviews = userReviews.filter(r=>String(r.id)!==String(reviewId));
+   saveReviews();
+  }
+
+  renderAll();
+
+  const remaining = allReviews().find(r=>r.title.toLowerCase()===selected.title.toLowerCase());
+
+  if(remaining) openMangaPage(remaining.id,false);
+  else setPage('library');
+
+  showToast('Review excluída.');
  }));
 
  if(updateHistory)history.pushState({mangaId:id},'',location.pathname+location.search+'#manga/'+encodeURIComponent(id));
