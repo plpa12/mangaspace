@@ -894,6 +894,10 @@ function openMangaPage(id,updateHistory=true){
  );
 
  const main=related.find(r=>r.image)||selected;
+ const mangaRating=getMangaRating(selected.title);
+ const displayedMangaRating=mangaRating
+ ? ratingMarkup(mangaRating.average)
+ : '—';
  const cover=main.image
   ?`<img class="manga-detail-cover" src="${main.image}" alt="Capa de ${escapeHtml(selected.title)}">`
   :`<div class="manga-detail-placeholder">${escapeHtml(selected.title)}</div>`;
@@ -916,7 +920,7 @@ function openMangaPage(id,updateHistory=true){
  <div class="eyebrow">MANGASPACE · BIBLIOTECA</div>
  <h1>${escapeHtml(selected.title)}</h1>
  <div class="manga-detail-meta">${escapeHtml(selected.author||'Autor não informado')} · ${escapeHtml(selected.genre||'Mangá')}</div>
- <div class="manga-detail-rating">${ratingMarkup(selected.rating)} <span style="color:#888;font-size:12px">/ 10</span></div>
+ <div class="manga-detail-rating">${displayedMangaRating} <span style="color:#888;font-size:12px">/ 10</span></div>
  <p class="manga-detail-description">Explore a obra e confira as opiniões dos leitores do MangaSpace.</p>
  ${stats}
  <button class="btn secondary" id="goToReviews">Ver reviews ↓</button>
