@@ -1406,6 +1406,26 @@ async function loadSharedReviews() {
     return;
   }
 
+  
+  const userIds = [...new Set((data || []).map(review => review.user_id).filter(Boolean))];
+
+  let profilesById = {};
+
+  if (userIds.length) {
+    const { data: profiles, error: profilesError } = await supabaseClient
+      .from('profiles')
+      .select('id, nickname')
+      .in('id', userIds);
+
+    if (profilesError) {
+      console.error('Erro ao carregar nomes dos autores:', profilesError);
+    } else {
+      profilesById = Object.fromEntries(
+        (profiles || []).map(profile => [profile.id, profile.nickname || ''])
+      );
+    }
+  }
+
   sharedReviews = (data || []).map(review => ({
     id: review.id,
     title: review.manga_title,
@@ -1417,7 +1437,8 @@ async function loadSharedReviews() {
     review: review.review_text,
     date: review.created_at,
     seed: false,
-    userId: review.user_id
+    userId: review.user_id,
+    reviewerName: profilesById[review.user_id] || ''
   }));
 
   renderAll();
