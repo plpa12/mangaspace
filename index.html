@@ -68,6 +68,13 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .star{color:#e6a323}
 .tag{display:inline-block;background:#f4f4f4;border-radius:99px;padding:3px 8px;font-size:10px;margin-top:10px;color:#555}
 .review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.launches-placeholder {
+  width: 100%;
+  min-height: 230px;
+  border: 1px solid #2c353b;
+  border-radius: 9px;
+  background: linear-gradient(120deg, #1a2024, #13191c);
+}
 .review-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:100px 1fr;gap:15px;cursor:pointer;transition:.2s;min-width:0}
 .review-card:hover{border-color:#ccc;transform:translateY(-2px)}
 .review-thumb{width:100px;aspect-ratio:2/3;height:auto;align-self:start;object-fit:contain;border-radius:9px;background:#eee;display:block}
@@ -315,21 +322,7 @@ footer{border-color:#252d32;color:#8e989f}
  #recentReviews,#latestReviews{grid-template-columns:1fr}
  .hero h1{font-size:31px}
 }
-/* Slot único: Lançamentos no Brasil */
-.launch-slot {
-  width: 100%;
-  min-height: 190px;
-  border: 1px solid #2c353b;
-  border-radius: 9px;
-  background: linear-gradient(135deg, #1a2024, #111619);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: #8e989f;
-  font-size: 13px;
-  text-align: center;
-}
+
 </style>
 </head>
 <body>
@@ -373,16 +366,24 @@ footer{border-color:#252d32;color:#8e989f}
    <div class="section-head"><h2>Em destaque</h2><button class="text-link" id="showAllManga">Ver todos →</button></div>
    <div class="manga-grid" id="featuredGrid"></div>
   </section>
-  <section class="section" id="recentSection">
-   <div class="section-head">
-  <h2>Lançamentos no Brasil</h2>
-</div>
-<div class="launch-slot" id="recentReviews">
-  <span>Novidades em breve</span>
-</div>
-   <div class="section-head latest-heading"><h2>Últimas reviews</h2><button class="text-link" id="latestReviewsBtn">Ver todas →</button></div>
-   <div class="review-grid" id="latestReviews"></div>
-  </section>
+  
+<section class="section" id="recentSection">
+  <div class="section-head">
+    <h2>Lançamentos no Brasil</h2>
+  </div>
+
+  <div
+    class="launches-placeholder"
+    aria-label="Espaço reservado para lançamentos no Brasil"
+  ></div>
+
+  <div class="section-head latest-heading">
+    <h2>Últimas reviews</h2>
+    <button class="text-link" id="latestReviewsBtn">Ver todas →</button>
+  </div>
+
+  <div class="review-grid" id="latestReviews"></div>
+</section>
   <section class="section" id="popularSection">
    <div class="section-head"><h2>Autores aclamados</h2></div>
    <div class="manga-grid" id="popularGrid"></div>
@@ -572,6 +573,7 @@ function renderManga(){
  attachMangaClicks(document.getElementById('libraryGrid'));
 }
 
+
 function renderReviews(){
  const q=searchTerm.toLocaleLowerCase('pt-BR');
  const items=allReviews().filter(m=>
@@ -579,18 +581,16 @@ function renderReviews(){
    .toLocaleLowerCase('pt-BR').includes(q)
  ).sort((a,b)=>new Date(b.date)-new Date(a.date));
 
- document.getElementById('recentReviews').innerHTML=
-  items.length?items.slice(0,3).map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
  document.getElementById('latestReviews').innerHTML=
   items.length?items.slice(3,6).map(reviewCard).join(''):'<div class="empty">Mais reviews em breve.</div>';
 
  document.getElementById('allReviewsGrid').innerHTML=
   items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
 
- attachMangaClicks(document.getElementById('recentReviews'));
  attachMangaClicks(document.getElementById('latestReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
 }
+
 
 function renderAll(){renderManga();renderReviews()}
 
@@ -826,9 +826,11 @@ document.getElementById('searchBox').addEventListener('click',()=>{
 document.getElementById('showAllManga').addEventListener('click',()=>navigate('library'));
 document.getElementById('latestReviewsBtn').addEventListener('click',()=>navigate('reviews'));
 
-['addReviewBtn','communityAdd','aboutAdd'].forEach(id=>
+
+['communityAdd','aboutAdd'].forEach(id=>
  document.getElementById(id).addEventListener('click',openReview)
 );
+
 
 ['closeReview','cancelReview'].forEach(id=>
  document.getElementById(id).addEventListener('click',()=>closeModal('reviewModal'))
