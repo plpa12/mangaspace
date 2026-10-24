@@ -725,7 +725,15 @@ let currentMangaId=null;
 
 function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch(e){return []}}
 function saveReviews(){try{localStorage.setItem(storageKey,JSON.stringify(userReviews));return true}catch(e){showToast('Armazenamento cheio. Tente uma imagem menor.');return false}}
-function allReviews(){return [...userReviews,...sharedReviews,...starterManga]}
+
+function allReviews(){
+ return [...userReviews,...sharedReviews,...starterManga];
+}
+
+function publishedReviews(){
+ return [...userReviews,...sharedReviews].filter(r=>!r.seed);
+}
+
 function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function getMangaRating(title){
  const key = title.trim().toLocaleLowerCase('pt-BR');
@@ -842,18 +850,24 @@ function renderManga(){
 }
 
 
+
 function renderReviews(){
  const q=searchTerm.toLocaleLowerCase('pt-BR');
- const items=allReviews().filter(m=>
+
+ const items=publishedReviews().filter(m=>
   (m.title+' '+(m.reviewTitle||'')+' '+(m.review||''))
    .toLocaleLowerCase('pt-BR').includes(q)
  ).sort((a,b)=>new Date(b.date)-new Date(a.date));
 
  document.getElementById('latestReviews').innerHTML=
-  items.length?items.slice(3,6).map(reviewCard).join(''):'<div class="empty">Mais reviews em breve.</div>';
+  items.length
+   ?items.slice(0,3).map(reviewCard).join('')
+   :'<div class="empty">Mais reviews em breve.</div>';
 
  document.getElementById('allReviewsGrid').innerHTML=
-  items.length?items.map(reviewCard).join(''):'<div class="empty">Nenhuma review encontrada.</div>';
+  items.length
+   ?items.map(reviewCard).join('')
+   :'<div class="empty">Nenhuma review publicada ainda.</div>';
 
  attachMangaClicks(document.getElementById('latestReviews'));
  attachMangaClicks(document.getElementById('allReviewsGrid'));
@@ -883,7 +897,8 @@ function openMangaPage(id,updateHistory=true){
 
  currentMangaId=id;
 
- const related=allReviews().filter(r=>
+ 
+const related=publishedReviews().filter(r=>
   r.title.trim().toLocaleLowerCase('pt-BR')===
   selected.title.trim().toLocaleLowerCase('pt-BR')
  );
