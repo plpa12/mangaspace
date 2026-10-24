@@ -791,7 +791,7 @@ function mangaCard(m){
 function reviewCard(m){
  return `<article class="review-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  ${m.image?`<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>`}
- <div class="review-content"><span class="review-label">${m.ratingOnly?'Nota':'Review'} · ${escapeHtml(m.genre||'Mangá')}</span>${m.ratingOnly?'':`<h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p>`}<div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
+ <div class="review-content"><span class="review-label">${m.ratingOnly?'Nota':'Review'} · ${escapeHtml(m.genre||'Mangá')}</span>${m.ratingOnly?'':`<h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p>`}<span>${escapeHtml(m.reviewerName ? m.reviewerName.trim().split(/\s+/)[0] : (m.seed ? 'MangaSpace' : 'Comunidade'))} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
 }
 
 function attachMangaClicks(root){
