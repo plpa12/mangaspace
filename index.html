@@ -1300,6 +1300,38 @@ supabaseClient.auth.onAuthStateChange(() => {
 
 updateAuthButton();
 
+async function loadSharedReviews() {
+  const { data, error } = await supabaseClient
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao carregar reviews compartilhadas:', error);
+    return;
+  }
+
+  sharedReviews = (data || []).map(review => ({
+    id: review.id,
+    title: review.manga_title,
+    author: review.manga_author || '',
+    genre: review.manga_genre || 'Mangá',
+    image: review.manga_image || '',
+    rating: review.rating,
+    reviewTitle: review.review_title,
+    review: review.review_text,
+    date: review.created_at,
+    seed: false,
+    userId: review.user_id
+  }));
+
+  renderAll();
+
+  if (location.hash.startsWith('#manga/')) {
+    handleRoute();
+  }
+}
+
 function setAuthMode(mode) {
   authMode = mode;
   const isRegister = mode === 'register';
@@ -1480,6 +1512,7 @@ document.getElementById('authForm').addEventListener('submit', async event => {
 
 renderAll();
 handleRoute();
+loadSharedReviews();
 </script>
 </body>
 </html>
