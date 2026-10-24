@@ -83,8 +83,7 @@ header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:
 .review-label{font-size:11px;color:#888}
 .review-content h3{font-size:14px;line-height:1.35;margin:6px 0}
 .review-content p{font-size:12px;color:#777;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.review-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:12px;font-size:10px!important;color:#888}
-.review-meta>span:first-child{font-size:10px!important;font-weight:400;line-height:1.4}
+.review-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:12px;font-size:10px;color:#888}
 .review-score{color:#222;white-space:nowrap}
 .empty{border:1px dashed #ddd;border-radius:14px;padding:30px;text-align:center;color:#777;font-size:14px;grid-column:1/-1}
 .community{background:#f8f8f6;border-radius:20px;padding:30px;display:flex;align-items:center;justify-content:space-between;gap:20px;margin:20px 0 50px}
@@ -276,10 +275,8 @@ header{background:rgba(13,17,19,.94);border-bottom:1px solid #20272c}
 .review-label{font-size:10px;color:#b4bdc3}
 .review-content h3{font-size:11px;line-height:1.35;margin:3px 0}
 .review-content p{font-size:10px;line-height:1.4;color:#9da7ae;-webkit-line-clamp:2}
-.review-meta{padding-top:5px!important;font-size:9px!important;color:#8d989f!important}
-.review-meta>span:first-child{font-size:9px!important;font-weight:400!important;line-height:1.3!important}
-.review-meta .review-score{font-size:9px!important;font-weight:400!important;color:#e2e6e9!important}
-.review-score .star{font-size:9px!important}
+.review-meta{padding-top:5px;font-size:9px;color:#8d989f}
+.review-score{color:#e2e6e9}
 .latest-heading{border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
 #latestReviews .review-card{grid-template-columns:58px minmax(0,1fr)}
 .empty{border-color:#303a40;background:#141a1e;color:#aab3b9}
@@ -760,25 +757,7 @@ function getMangaRating(title){
 }
 
 function ratingMarkup(r){return `<span class="star">★</span> ${Number(r).toFixed(1)}`}
-function formatDate(date){
- if(!date)return 'Data indisponível';
-
- const value=String(date).trim();
- const parsed=new Date(
-  /^\d{4}-\d{2}-\d{2}$/.test(value)
-   ? value+'T12:00:00Z'
-   : value
- );
-
- if(Number.isNaN(parsed.getTime()))return 'Data indisponível';
-
- return parsed.toLocaleDateString('pt-BR',{
-  day:'2-digit',
-  month:'2-digit',
-  year:'numeric',
-  timeZone:'UTC'
- });
-}
+function formatDate(date){try{return new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return date||''}}
 function findReview(id){return allReviews().find(m=>m.id===id)}
 
 function uniqueManga(){
@@ -812,7 +791,7 @@ function mangaCard(m){
 function reviewCard(m){
  return `<article class="review-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  ${m.image?`<img class="review-thumb" src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="review-thumb placeholder">${escapeHtml(m.title)}</div>`}
- <div class="review-content"><span class="review-label">${m.ratingOnly?'Nota':'Review'} · ${escapeHtml(m.genre||'Mangá')}</span>${m.ratingOnly?'':`<h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p>`}<span>${escapeHtml(m.reviewerName ? m.reviewerName.trim().split(/\s+/)[0] : (m.seed ? 'MangaSpace' : 'Comunidade'))} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
+ <div class="review-content"><span class="review-label">${m.ratingOnly?'Nota':'Review'} · ${escapeHtml(m.genre||'Mangá')}</span>${m.ratingOnly?'':`<h3>${escapeHtml(m.title)} — ${escapeHtml(m.reviewTitle||'Minha opinião')}</h3><p>${escapeHtml(m.review||'')}</p>`}<div class="review-meta"><span>${m.seed?'MangaSpace':'Comunidade'} · ${formatDate(m.date)}</span><span class="review-score">${ratingMarkup(m.rating)}</span></div></div></article>`;
 }
 
 function attachMangaClicks(root){
@@ -1427,26 +1406,6 @@ async function loadSharedReviews() {
     return;
   }
 
-  
-  const userIds = [...new Set((data || []).map(review => review.user_id).filter(Boolean))];
-
-  let profilesById = {};
-
-  if (userIds.length) {
-    const { data: profiles, error: profilesError } = await supabaseClient
-      .from('profiles')
-      .select('id, nickname')
-      .in('id', userIds);
-
-    if (profilesError) {
-      console.error('Erro ao carregar nomes dos autores:', profilesError);
-    } else {
-      profilesById = Object.fromEntries(
-        (profiles || []).map(profile => [profile.id, profile.nickname || ''])
-      );
-    }
-  }
-
   sharedReviews = (data || []).map(review => ({
     id: review.id,
     title: review.manga_title,
@@ -1458,8 +1417,7 @@ async function loadSharedReviews() {
     review: review.review_text,
     date: review.created_at,
     seed: false,
-    userId: review.user_id,
-    reviewerName: profilesById[review.user_id] || ''
+    userId: review.user_id
   }));
 
   renderAll();
