@@ -806,18 +806,13 @@ function renderManga(){
    .toLocaleLowerCase('pt-BR').includes(q)
  );
 
- const reviewsByTitle=new Map();
- allReviews().forEach(review=>{
-  const key=review.title.trim().toLocaleLowerCase('pt-BR');
-  if(!reviewsByTitle.has(key))reviewsByTitle.set(key,[]);
-  reviewsByTitle.get(key).push(review);
- });
-
- const featured=items.map(m=>{
-  const key=m.title.trim().toLocaleLowerCase('pt-BR');
-  const reviews=reviewsByTitle.get(key)||[m];
-  const average=reviews.reduce((sum,r)=>sum+Number(r.rating||0),0)/reviews.length;
-  return {...m,rating:average,reviewCount:reviews.length};
+  const featured=items.map(m=>{
+  const result=getMangaRating(m.title);
+  return {
+   ...m,
+   rating:result ? result.average : 0,
+   reviewCount:result ? result.count : 0
+  };
  }).sort((a,b)=>b.rating-a.rating||b.reviewCount-a.reviewCount).slice(0,5);
 
  const fillSlots=(list,count)=>{
