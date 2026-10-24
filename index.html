@@ -1233,55 +1233,25 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
   return;
  }
 
-
- const { data: { user }, error: userError } =
-  await supabaseClient.auth.getUser();
-
- if (userError || !user) {
-  showToast('Entre na sua conta para publicar uma review.');
-  setAuthMode('login');
-  document.getElementById('authModal').classList.add('open');
-  return;
- }
-
- const { data: savedReview, error: saveError } =
-  await supabaseClient
-   .from('reviews')
-   .insert({
-    user_id: user.id,
-    manga_title: selectedManga.title,
-    manga_author: selectedManga.author || '',
-    manga_genre: selectedManga.genre || 'Mangá',
-    manga_image: selectedManga.image || '',
-    rating,
-    review_title: reviewTitle,
-    review_text: reviewText
-   })
-   .select()
-   .single();
-
- if (saveError) {
-  showToast('Erro ao publicar: ' + saveError.message);
-  return;
- }
-
  const item = {
-  id: 'review-' + savedReview.id,
-  supabaseId: savedReview.id,
-  title: savedReview.manga_title,
-  author: savedReview.manga_author || '',
-  rating: savedReview.rating,
-  genre: savedReview.manga_genre || 'Mangá',
-  image: savedReview.manga_image || '',
-  reviewTitle: savedReview.review_title,
-  review: savedReview.review_text,
-  date: savedReview.created_at.slice(0, 10),
-  seed: false,
-  userId: savedReview.user_id
+  id: 'review-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
+  title: selectedManga.title,
+  author: selectedManga.author || '',
+  rating,
+  genre: selectedManga.genre || 'Mangá',
+  image: selectedManga.image || '',
+  reviewTitle,
+  review: reviewText,
+  date: new Date().toISOString().slice(0,10),
+  seed: false
  };
 
  userReviews.unshift(item);
- saveReviews();
+
+ if(!saveReviews()){
+  userReviews.shift();
+  return;
+ }
 
  closeModal('reviewModal');
 
@@ -1297,7 +1267,7 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
 
  renderAll();
  openMangaPage(item.id);
- showToast('Review publicada no MangaSpace!');
+ showToast('Review publicada neste navegador!');
 });
 
 let authMode = 'login';
@@ -1504,7 +1474,7 @@ document.getElementById('authForm').addEventListener('submit', async event => {
   } finally {
     submitButton.disabled = false;
   }
-});
+});a
 
 
 renderAll();
