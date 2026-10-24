@@ -772,9 +772,12 @@ function findMangaByTitle(query){
 }
 
 function mangaCard(m){
+ const result = getMangaRating(m.title);
+ const displayedRating = result ? ratingMarkup(result.average) : '—';
+
  return `<article class="manga-card" tabindex="0" role="button" data-manga="${escapeHtml(m.id)}" aria-label="Abrir ${escapeHtml(m.title)}">
  <div class="cover">${m.image?`<img src="${m.image}" alt="Capa de ${escapeHtml(m.title)}">`:`<div class="cover-placeholder">${escapeHtml(m.title)}</div>`}</div>
- <div class="manga-info"><h3>${escapeHtml(m.title)}</h3><div class="author">${escapeHtml(m.author||'Autor não informado')}</div><div class="rating">${ratingMarkup(m.rating)}</div><span class="tag">${escapeHtml(m.genre||'Mangá')}</span></div></article>`;
+ <div class="manga-info"><h3>${escapeHtml(m.title)}</h3><div class="author">${escapeHtml(m.author||'Autor não informado')}</div><div class="rating">${displayedRating}</div><span class="tag">${escapeHtml(m.genre||'Mangá')}</span></div></article>`;
 }
 
 function reviewCard(m){
