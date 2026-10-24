@@ -1271,6 +1271,33 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
 });
 
 let authMode = 'login';
+let currentUser = null;
+
+async function updateAuthButton() {
+  const button = document.getElementById('authOpenBtn');
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  currentUser = session?.user ?? null;
+
+  if (currentUser) {
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('nickname')
+      .eq('id', currentUser.id)
+      .single();
+
+    button.textContent = profile?.nickname || 'Minha conta';
+    button.title = 'Conta conectada';
+  } else {
+    button.textContent = 'Entrar';
+    button.title = 'Entrar na sua conta';
+  }
+}
+
+supabaseClient.auth.onAuthStateChange(() => {
+  updateAuthButton();
+});
+
+updateAuthButton();
 
 function setAuthMode(mode) {
   authMode = mode;
