@@ -1270,6 +1270,58 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
  showToast('Review publicada neste navegador!');
 });
 
+let authMode = 'login';
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isRegister = mode === 'register';
+
+  document.getElementById('authTitle').textContent =
+    isRegister ? 'Criar conta no MangaSpace' : 'Entrar no MangaSpace';
+
+  document.getElementById('authDescription').textContent =
+    isRegister
+      ? 'Crie sua conta para participar da comunidade.'
+      : 'Entre na sua conta para participar da comunidade.';
+
+  document.getElementById('authNicknameField').hidden = !isRegister;
+  document.getElementById('authNickname').required = isRegister;
+
+  document.getElementById('authPassword').autocomplete =
+    isRegister ? 'new-password' : 'current-password';
+
+  document.getElementById('authSubmitBtn').textContent =
+    isRegister ? 'Criar conta' : 'Entrar';
+
+  document.getElementById('authSwitchText').textContent =
+    isRegister ? 'Já tem uma conta?' : 'Ainda não tem uma conta?';
+
+  document.getElementById('authSwitchBtn').textContent =
+    isRegister ? 'Entrar' : 'Criar conta';
+
+  document.getElementById('authMessage').textContent = '';
+}
+
+document.getElementById('authOpenBtn').addEventListener('click', () => {
+  setAuthMode('login');
+  document.getElementById('authModal').classList.add('open');
+});
+
+document.getElementById('closeAuth').addEventListener('click', () => {
+  closeModal('authModal');
+});
+
+document.getElementById('authSwitchBtn').addEventListener('click', () => {
+  setAuthMode(authMode === 'login' ? 'register' : 'login');
+});
+
+document.getElementById('authForm').addEventListener('submit', event => {
+  event.preventDefault();
+
+  document.getElementById('authMessage').textContent =
+    'A conexão com o sistema de contas será configurada no próximo passo.';
+});
+
 renderAll();
 handleRoute();
 </script>
